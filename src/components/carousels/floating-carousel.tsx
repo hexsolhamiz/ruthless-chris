@@ -74,7 +74,7 @@ export default function FloatingCarousel() {
     setCurrentX(clientX);
   };
 
-  const handleDragMove = (e) => {
+  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDragging) return;
 
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -144,18 +144,18 @@ export default function FloatingCarousel() {
 
         {/* Tilted chain-style navigation - no background container */}
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
-          <div 
+          <div
             className="flex items-center"
             style={{
-              transform: 'perspective(300px) rotateX(200deg)',
-              transformStyle: 'preserve-3d',
-              gap: '16px',
+              transform: "perspective(300px) rotateX(200deg)",
+              transformStyle: "preserve-3d",
+              gap: "16px",
             }}
           >
             {slides.map((slide, index) => {
               const isActive = index === currentSlide;
               const distance = Math.abs(index - currentSlide);
-              
+
               return (
                 <button
                   key={slide.id}
@@ -169,14 +169,32 @@ export default function FloatingCarousel() {
                   }`}
                   style={{
                     transform: `
-                      translateZ(${isActive ? '25px' : distance === 1 ? '15px' : '5px'})
-                      translateX(${index < currentSlide ? `-${distance * 8}px` : index > currentSlide ? `${distance * 8}px` : '0px'})
-                      rotateY(${index < currentSlide ? '-15deg' : index > currentSlide ? '15deg' : '0deg'})
-                      scale(${isActive ? '1.1' : distance === 1 ? '0.95' : '0.85'})
+                      translateZ(${
+                        isActive ? "25px" : distance === 1 ? "15px" : "5px"
+                      })
+                      translateX(${
+                        index < currentSlide
+                          ? `-${distance * 8}px`
+                          : index > currentSlide
+                          ? `${distance * 8}px`
+                          : "0px"
+                      })
+                      rotateY(${
+                        index < currentSlide
+                          ? "-15deg"
+                          : index > currentSlide
+                          ? "15deg"
+                          : "0deg"
+                      })
+                      scale(${
+                        isActive ? "1.1" : distance === 1 ? "0.95" : "0.85"
+                      })
                     `,
-                    background: isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(10px)',
-                    marginLeft: index > 0 ? '-8px' : '0px',
+                    background: isActive
+                      ? "rgba(255,255,255,0.2)"
+                      : "rgba(255,255,255,0.1)",
+                    backdropFilter: "blur(10px)",
+                    marginLeft: index > 0 ? "-8px" : "0px",
                   }}
                 >
                   <Image
@@ -186,22 +204,23 @@ export default function FloatingCarousel() {
                     alt={slide.title}
                     className="w-full h-full object-cover rounded-full"
                   />
-                  
+
                   {/* Active indicator glow */}
                   {isActive && (
-                    <div 
+                    <div
                       className="absolute inset-0 rounded-full border-2 border-white/80 animate-pulse"
                       style={{
-                        boxShadow: '0 0 25px rgba(255,255,255,0.6), inset 0 0 10px rgba(255,255,255,0.3)',
+                        boxShadow:
+                          "0 0 25px rgba(255,255,255,0.6), inset 0 0 10px rgba(255,255,255,0.3)",
                       }}
                     />
                   )}
-                  
+
                   {/* Subtle inner shadow for depth */}
-                  <div 
+                  <div
                     className="absolute inset-0 rounded-full"
                     style={{
-                      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)',
+                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.2)",
                     }}
                   />
                 </button>
@@ -217,8 +236,6 @@ export default function FloatingCarousel() {
             style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}
           />
         </div>
-
-      
       </div>
     </div>
   );
