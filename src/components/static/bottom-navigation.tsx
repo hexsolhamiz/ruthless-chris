@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Wifi, Monitor, Info, Phone, Mail, Share2 } from "lucide-react"
 
 const navigationItems = [
-  { id: "wifi", icon: Wifi, label: "Wifi" },
+  { id: "live", icon: Wifi, label: "live" },
   { id: "display", icon: Monitor, label: "Display" },
   { id: "info", icon: Info, label: "Info" },
   { id: "phone", icon: Phone, label: "Phone" },
@@ -14,7 +14,7 @@ const navigationItems = [
 ]
 
 export function BottomNavigation() {
-  const [activeItem, setActiveItem] = useState("wifi")
+  const [activeItem, setActiveItem] = useState("live")
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-50">
