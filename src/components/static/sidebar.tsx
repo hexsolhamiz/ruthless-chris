@@ -1,11 +1,12 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Radio, Monitor, Info, Phone, Mail, Share2, X } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Radio, Monitor, Info, Phone, Mail, Share2, X } from "lucide-react";
+import Image from "next/image";
 
 interface SidebarProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
@@ -17,10 +18,15 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <h2 className="text-xl font-bold text-white">Menu</h2>
-          <Button variant="ghost" size="sm" className="text-white hover:bg-white/10" onClick={onClose}>
-            <X className="w-5 h-5" />
+        <div className="flex items-center justify-between p-6 border-b  border-white/10">
+          <Image src="/logo.png" width={50} height={50} alt="Logo" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-white hover:cursor-pointer"
+            onClick={onClose}
+          >
+            <X className="w-5 h-5 " />
           </Button>
         </div>
         <div className="p-6 space-y-4">
@@ -54,7 +60,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       </div>
 
       {/* Sidebar Overlay */}
-      {isOpen && <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} />
+      )}
     </>
-  )
+  );
 }

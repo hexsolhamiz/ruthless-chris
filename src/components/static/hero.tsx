@@ -1,61 +1,73 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Menu, Radio, Monitor, Info, Phone, Mail, Share2, Play, Pause, Volume2 } from "lucide-react"
+import type React from "react";
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Menu,
+  Radio,
+  Monitor,
+  Info,
+  Phone,
+  Mail,
+  Share2,
+  Play,
+  Pause,
+  Volume2,
+} from "lucide-react";
+import Image from "next/image";
 
 interface HeroProps {
-  onMenuClick: () => void
+  onMenuClick: () => void;
 }
 
 export function Hero({ onMenuClick }: HeroProps) {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(180) // 3 minutes default
-  const [volume, setVolume] = useState(0.7)
-  const audioRef = useRef<HTMLAudioElement>(null)
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(180); // 3 minutes default
+  const [volume, setVolume] = useState(0.7);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.pause()
+        audioRef.current.pause();
       } else {
-        audioRef.current.play()
+        audioRef.current.play();
       }
-      setIsPlaying(!isPlaying)
+      setIsPlaying(!isPlaying);
     }
-  }
+  };
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime)
+      setCurrentTime(audioRef.current.currentTime);
     }
-  }
+  };
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
-      setDuration(audioRef.current.duration)
+      setDuration(audioRef.current.duration);
     }
-  }
+  };
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (audioRef.current) {
-      const rect = e.currentTarget.getBoundingClientRect()
-      const clickX = e.clientX - rect.left
-      const newTime = (clickX / rect.width) * duration
-      audioRef.current.currentTime = newTime
-      setCurrentTime(newTime)
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const newTime = (clickX / rect.width) * duration;
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
     }
-  }
+  };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number.parseFloat(e.target.value)
-    setVolume(newVolume)
+    const newVolume = Number.parseFloat(e.target.value);
+    setVolume(newVolume);
     if (audioRef.current) {
-      audioRef.current.volume = newVolume
+      audioRef.current.volume = newVolume;
     }
-  }
+  };
 
   useEffect(() => {
     // Simulate audio progress for demo
@@ -63,33 +75,29 @@ export function Hero({ onMenuClick }: HeroProps) {
       if (isPlaying) {
         setCurrentTime((prev) => {
           if (prev >= duration) {
-            setIsPlaying(false)
-            return 0
+            setIsPlaying(false);
+            return 0;
           }
-          return prev + 1
-        })
+          return prev + 1;
+        });
       }
-    }, 1000)
+    }, 1000);
 
-    return () => clearInterval(interval)
-  }, [isPlaying, duration])
+    return () => clearInterval(interval);
+  }, [isPlaying, duration]);
 
   return (
-    <div className="relative min-h-[400px] bg-[url(/hero.png)] overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-30"
-        style={{ backgroundImage: "url(/studio-bg.png)" }}
-      />
-
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/30 to-black/60" />
-
+    <div className="relative min-h-[400px] bg-[url(/hero.png)] bg-cover bg-center bg-no-repeat overflow-hidden">
       {/* Navigation Bar */}
       <nav className="relative z-50 flex items-center justify-between px-6 py-4 text-white">
         {/* Left Navigation */}
         <div className="flex items-center space-x-6">
-          <Button variant="ghost" size="sm" className="text-white hover:bg-white/10 p-2" onClick={onMenuClick}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-white hover:bg-white/10 p-2"
+            onClick={onMenuClick}
+          >
             <Menu className="w-5 h-5" />
           </Button>
 
@@ -132,13 +140,19 @@ export function Hero({ onMenuClick }: HeroProps) {
       </nav>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-[500px] px-6">
         {/* Animated Wave Graphics */}
-       
+        <Image
+          src="/logo.png"
+          width={400}
+          height={400}
+          alt="Logo"
+          className=" animate-pulse"
+        />
       </div>
 
       {/* Audio Player Controls */}
-      <div className="absolute bottom-0 left-0 right-0 z-30 bg-black/80 backdrop-blur-lg border-t border-white/10 p-6">
+      <div className=" z-30  p-6">
         <div className="flex items-center space-x-4">
           {/* Play/Pause Button */}
           <Button
@@ -147,19 +161,29 @@ export function Hero({ onMenuClick }: HeroProps) {
             className="text-white hover:bg-white/10 p-3 rounded-full"
             onClick={togglePlay}
           >
-            {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+            {isPlaying ? (
+              <Pause className="w-6 h-6" />
+            ) : (
+              <Play className="w-6 h-6" />
+            )}
           </Button>
 
           {/* Progress Bar */}
           <div className="flex-1 mx-4">
-            <div className="h-2 bg-white/20 rounded-full cursor-pointer relative" onClick={handleProgressClick}>
+            <div
+              className="h-2 bg-white/20 rounded-full cursor-pointer relative"
+              onClick={handleProgressClick}
+            >
               <div
                 className="h-full bg-cyan-400 rounded-full transition-all duration-300"
                 style={{ width: `${(currentTime / duration) * 100}%` }}
               />
               <div
                 className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 bg-cyan-400 rounded-full shadow-lg"
-                style={{ left: `${(currentTime / duration) * 100}%`, marginLeft: "-8px" }}
+                style={{
+                  left: `${(currentTime / duration) * 100}%`,
+                  marginLeft: "-8px",
+                }}
               />
             </div>
           </div>
@@ -179,6 +203,17 @@ export function Hero({ onMenuClick }: HeroProps) {
           </div>
         </div>
       </div>
+      
+
+     <div className="max-w-6xl mx-auto pb-12">
+        <h1 className="text-4xl font-bold text-white mb-2 text-center">
+          Track Info Here
+        </h1>
+        <p className="text-lg text-white/90 text-center">
+          Your ultimate destination for live streams, music, and more. Explore
+          our content and stay connected!
+        </p>
+     </div>
 
       {/* Hidden Audio Element */}
       <audio
@@ -188,5 +223,5 @@ export function Hero({ onMenuClick }: HeroProps) {
         src="/placeholder-audio.mp3"
       />
     </div>
-  )
+  );
 }
