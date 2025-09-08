@@ -29,7 +29,6 @@ export default function RuthlessChrisPage() {
       <div className="md:hidden block">
         <FloatingCarousel />
         <BottomNavigation />
-        <Footer/>
       </div>
     </>
   );
