@@ -87,9 +87,9 @@ export function Hero({ onMenuClick }: HeroProps) {
   }, [isPlaying, duration]);
 
   return (
-    <div className="relative min-h-[400px] bg-[url(/hero.png)] bg-cover bg-center bg-no-repeat overflow-hidden">
+    <div className="relative min-h-screen lg:min-h-[400px] bg-[url(/hero.png)] bg-cover bg-center bg-no-repeat overflow-hidden">
       {/* Navigation Bar */}
-      <nav className="relative z-50 flex items-center justify-between px-6 py-4 text-white">
+      <nav className="hidden md:flex relative z-50 items-center justify-between px-6 py-4 text-white">
         {/* Left Navigation */}
         <div className="flex items-center space-x-6">
           <Button

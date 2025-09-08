@@ -1,107 +1,118 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image"
+import type React from "react"
+import { useState, useEffect, useRef } from "react"
+import { Hero } from "../static/hero"
+import { LiveStream } from "../static/live-stream"
+import MusicShowCarousel from "./music-show-carousel"
+import { MusicMadness } from "../music/music-madness"
+import { EventsCarousel } from "./events-carousel"
 
-const slides = [
+
+
+export default function FloatingCarousel() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const [isDragging, setIsDragging] = useState(false)
+  const [startX, setStartX] = useState(0)
+  const [currentX, setCurrentX] = useState(0)
+  const [dragOffset, setDragOffset] = useState(0)
+  const carouselRef = useRef(null)
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (!isAutoPlaying || isDragging) return
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length)
+    }, 4000)
+
+    return () => clearInterval(interval)
+  }, [isAutoPlaying, isDragging])
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index)
+    setIsAutoPlaying(false)
+  }
+
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    setIsDragging(true)
+    setIsAutoPlaying(false)
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX
+    setStartX(clientX)
+    setCurrentX(clientX)
+  }
+
+  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDragging) return
+
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX
+    setCurrentX(clientX)
+    const diff = clientX - startX
+    setDragOffset(diff)
+  }
+
+  const handleDragEnd = () => {
+    if (!isDragging) return
+
+    setIsDragging(false)
+    const diff = currentX - startX
+    const threshold = 100
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0 && currentSlide > 0) {
+        setCurrentSlide(currentSlide - 1)
+      } else if (diff < 0 && currentSlide < slides.length - 1) {
+        setCurrentSlide(currentSlide + 1)
+      }
+    }
+
+    setDragOffset(0)
+    setStartX(0)
+    setCurrentX(0)
+  }
+
+
+
+  const slides = [
   {
     id: 1,
     title: "Slide One",
-    content: "Beautiful content for the first slide",
+    content: <Hero onMenuClick={() => setIsSidebarOpen(true)}  />,
     color: "bg-gradient-to-br from-blue-500 to-purple-600",
-    image: "/api/placeholder/60/60",
+    image: "/slides/slide1.png",
   },
   {
     id: 2,
     title: "Slide Two",
-    content: "Amazing content for the second slide",
+    content: <MusicMadness />,
     color: "bg-gradient-to-br from-green-500 to-teal-600",
-    image: "/api/placeholder/60/60",
+    image: "/slides/slide2.png",
   },
   {
     id: 3,
     title: "Slide Three",
-    content: "Incredible content for the third slide",
+    content: <MusicShowCarousel  />,
     color: "bg-gradient-to-br from-orange-500 to-red-600",
-    image: "/api/placeholder/60/60",
+    image: "/slides/slide3.png",
   },
   {
     id: 4,
     title: "Slide Four",
-    content: "Fantastic content for the fourth slide",
-    color: "bg-gradient-to-br from-pink-500 to-rose-600",
-    image: "/api/placeholder/60/60",
+    content: <LiveStream  videoUrl="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />,
+    color: "",
+    image: "/slides/slide4.png",
   },
   {
     id: 5,
     title: "Slide Five",
-    content: "Wonderful content for the fifth slide",
+    content: <EventsCarousel />,
     color: "bg-gradient-to-br from-indigo-500 to-blue-600",
-    image: "/api/placeholder/60/60",
+    image: "/slides/slide2.png",
   },
-];
-
-export default function FloatingCarousel() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [currentX, setCurrentX] = useState(0);
-  const [dragOffset, setDragOffset] = useState(0);
-  const carouselRef = useRef(null);
-
-  // Auto-play functionality
-  useEffect(() => {
-    if (!isAutoPlaying || isDragging) return;
-
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, isDragging]);
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false);
-  };
-
-  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    setIsDragging(true);
-    setIsAutoPlaying(false);
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    setStartX(clientX);
-    setCurrentX(clientX);
-  };
-
-  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDragging) return;
-
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    setCurrentX(clientX);
-    const diff = clientX - startX;
-    setDragOffset(diff);
-  };
-
-  const handleDragEnd = () => {
-    if (!isDragging) return;
-
-    setIsDragging(false);
-    const diff = currentX - startX;
-    const threshold = 100;
-
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0 && currentSlide > 0) {
-        setCurrentSlide(currentSlide - 1);
-      } else if (diff < 0 && currentSlide < slides.length - 1) {
-        setCurrentSlide(currentSlide + 1);
-      }
-    }
-
-    setDragOffset(0);
-    setStartX(0);
-    setCurrentX(0);
-  };
+]
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -112,9 +123,7 @@ export default function FloatingCarousel() {
           ref={carouselRef}
           className="flex h-full transition-transform duration-700 ease-in-out cursor-grab active:cursor-grabbing"
           style={{
-            transform: `translateX(calc(-${currentSlide * 100}% + ${
-              isDragging ? dragOffset : 0
-            }px))`,
+            transform: `translateX(calc(-${currentSlide * 100}% + ${isDragging ? dragOffset : 0}px))`,
             transition: isDragging ? "none" : "transform 0.7s ease-in-out",
           }}
           onMouseDown={handleDragStart}
@@ -126,35 +135,26 @@ export default function FloatingCarousel() {
           onTouchEnd={handleDragEnd}
         >
           {slides.map((slide) => (
-            <div
-              key={slide.id}
-              className={`min-w-full h-full flex items-center justify-center ${slide.color}`}
-            >
-              <div className="text-center text-white px-8 py-12 bg-black/30 backdrop-blur-sm rounded-2xl border border-white/20">
-                <h1 className="text-6xl font-bold mb-6 text-white">
-                  {slide.title}
-                </h1>
-                <p className="text-xl opacity-90 max-w-2xl mx-auto text-white">
-                  {slide.content}
-                </p>
-              </div>
+            <div key={slide.id} className={`min-w-full h-full flex items-center justify-center`}>
+                {slide.content}
             </div>
           ))}
         </div>
 
-        {/* Tilted chain-style navigation - no background container */}
+        {/* Tilted chain-style navigation - fixed positioning */}
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
           <div
-            className="flex items-center"
+            className="flex items-end justify-center"
             style={{
-              transform: "perspective(300px) rotateX(200deg)",
+              transform: "perspective(400px) rotateY(-5deg)",
               transformStyle: "preserve-3d",
-              gap: "16px",
+              gap: "8px",
+              height: "80px",
             }}
           >
             {slides.map((slide, index) => {
-              const isActive = index === currentSlide;
-              const distance = Math.abs(index - currentSlide);
+              const isActive = index === currentSlide
+              const distance = Math.abs(index - currentSlide)
 
               return (
                 <button
@@ -162,39 +162,22 @@ export default function FloatingCarousel() {
                   onClick={() => goToSlide(index)}
                   className={`relative rounded-full p-0 border-2 overflow-hidden transition-all duration-500 ease-out ${
                     isActive
-                      ? "w-14 h-14 border-white shadow-2xl z-30"
+                      ? "w-16 h-16 border-white shadow-2xl z-30"
                       : distance === 1
-                      ? "w-12 h-12 border-white/80 shadow-lg z-20"
-                      : "w-10 h-10 border-white/60 shadow-md z-10"
+                        ? "w-12 h-12 border-white/80 shadow-lg z-20"
+                        : "w-10 h-10 border-white/60 shadow-md z-10"
                   }`}
                   style={{
                     transform: `
-                      translateZ(${
-                        isActive ? "25px" : distance === 1 ? "15px" : "5px"
-                      })
                       translateX(${
-                        index < currentSlide
-                          ? `-${distance * 8}px`
-                          : index > currentSlide
-                          ? `${distance * 8}px`
-                          : "0px"
+                        index < currentSlide ? `-${distance * 4}px` : index > currentSlide ? `${distance * 4}px` : "0px"
                       })
-                      rotateY(${
-                        index < currentSlide
-                          ? "-15deg"
-                          : index > currentSlide
-                          ? "15deg"
-                          : "0deg"
-                      })
-                      scale(${
-                        isActive ? "1.1" : distance === 1 ? "0.95" : "0.85"
-                      })
+                      translateY(${isActive ? "20px" : distance === 1 ? "10px" : "0px"})
+                      rotateY(${index < currentSlide ? "-20deg" : index > currentSlide ? "20deg" : "0deg"})
+                      scale(${isActive ? "1.2" : distance === 1 ? "0.9" : "0.8"})
                     `,
-                    background: isActive
-                      ? "rgba(255,255,255,0.2)"
-                      : "rgba(255,255,255,0.1)",
+                    background: isActive ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.15)",
                     backdropFilter: "blur(10px)",
-                    marginLeft: index > 0 ? "-8px" : "0px",
                   }}
                 >
                   <Image
@@ -210,8 +193,7 @@ export default function FloatingCarousel() {
                     <div
                       className="absolute inset-0 rounded-full border-2 border-white/80 animate-pulse"
                       style={{
-                        boxShadow:
-                          "0 0 25px rgba(255,255,255,0.6), inset 0 0 10px rgba(255,255,255,0.3)",
+                        boxShadow: "0 0 25px rgba(255,255,255,0.6), inset 0 0 10px rgba(255,255,255,0.3)",
                       }}
                     />
                   )}
@@ -224,7 +206,7 @@ export default function FloatingCarousel() {
                     }}
                   />
                 </button>
-              );
+              )
             })}
           </div>
         </div>
@@ -238,5 +220,5 @@ export default function FloatingCarousel() {
         </div>
       </div>
     </div>
-  );
+  )
 }
