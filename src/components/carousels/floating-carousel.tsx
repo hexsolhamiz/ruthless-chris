@@ -172,7 +172,7 @@ export default function FloatingCarousel() {
                       translateX(${
                         index < currentSlide ? `-${distance * 4}px` : index > currentSlide ? `${distance * 4}px` : "0px"
                       })
-                      translateY(${isActive ? "20px" : distance === 1 ? "10px" : "0px"})
+                      translateY(${isActive ? "20px" : distance === 1 ? "0px" : "-20px"})
                       rotateY(${index < currentSlide ? "-20deg" : index > currentSlide ? "20deg" : "0deg"})
                       scale(${isActive ? "1.2" : distance === 1 ? "0.9" : "0.8"})
                     `,
