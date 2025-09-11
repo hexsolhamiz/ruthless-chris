@@ -207,7 +207,7 @@ export default function FloatingCarousel() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-[600px] bg-gray-100">
       {/* Main Carousel Container */}
       <div className="relative w-full h-screen overflow-hidden">
         {/* Slides */}
