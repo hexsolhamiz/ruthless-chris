@@ -144,7 +144,7 @@ export default function FloatingCarousel() {
             height: "80px",
           }}
         >
-          {visibleSlides.map((slide, index) => {
+          {visibleSlides.map((slide) => {
             const relativePos = slide.relativePosition
             const isActive = relativePos === 0
             const distance = Math.abs(relativePos)
@@ -153,7 +153,7 @@ export default function FloatingCarousel() {
               <button
                 key={`${slide.id}-${slide.originalIndex}`}
                 onClick={() => goToSlide(slide.originalIndex)}
-                className={`relative rounded-full p-0 border-2 overflow-hidden transition-all duration-500 ease-out ${
+                className={`relative rounded-full p-0 border-2 overflow-hidden ${
                   isActive
                     ? "w-16 h-16 border-white shadow-2xl z-30"
                     : distance === 1
