@@ -179,6 +179,7 @@ export default function FloatingCarousel() {
                   src={slide.image || "/placeholder.svg"}
                   alt={slide.title}
                   className="w-full h-full object-cover rounded-full"
+                  style={{ transition: "none" }}
                 />
 
                 {/* Active indicator glow */}
