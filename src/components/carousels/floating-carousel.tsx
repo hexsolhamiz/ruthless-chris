@@ -144,7 +144,7 @@ export default function FloatingCarousel() {
             height: "80px",
           }}
         >
-          {visibleSlides.map((slide) => {
+          {visibleSlides.map((slide, index) => {
             const relativePos = slide.relativePosition
             const isActive = relativePos === 0
             const distance = Math.abs(relativePos)
@@ -165,7 +165,7 @@ export default function FloatingCarousel() {
                     translateX(${
                       relativePos < 0 ? `-${distance * 4}px` : relativePos > 0 ? `${distance * 4}px` : "0px"
                     })
-                    translateY(${isActive ? "20px" : distance === 1 ? "-10px" : "-30px"})
+                    translateY(${isActive ? "20px" : distance === 1 ? "0px" : "-20px"})
                     rotateY(${relativePos < 0 ? "-20deg" : relativePos > 0 ? "20deg" : "0deg"})
                     scale(${isActive ? "1.2" : distance === 1 ? "0.9" : "0.8"})
                   `,
@@ -207,7 +207,7 @@ export default function FloatingCarousel() {
   }
 
   return (
-    <div className="min-h-[600px] bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
       {/* Main Carousel Container */}
       <div className="relative w-full h-screen overflow-hidden">
         {/* Slides */}
@@ -216,7 +216,7 @@ export default function FloatingCarousel() {
           className="flex h-full transition-transform duration-700 ease-in-out cursor-grab active:cursor-grabbing"
           style={{
             transform: `translateX(calc(-${currentSlide * 100}% + ${isDragging ? dragOffset : 0}px))`,
-            transition: isDragging ? "none" : "transform 0.7s ease-in-out",
+            transition: isDragging ? "none" : "transform 0.3s ease-out",
           }}
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
