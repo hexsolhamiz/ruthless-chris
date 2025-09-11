@@ -26,7 +26,7 @@ export default function RuthlessChrisPage() {
         <LiveStream videoUrl="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />
         <Footer />
       </div>
-      <div className="md:hidden h-screen flex flex-col justify-between">
+      <div className="md:hidden h-[90vh] flex flex-col justify-between">
         <FloatingCarousel />
         <BottomNavigation />
       </div>

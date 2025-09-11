@@ -207,9 +207,9 @@ export default function FloatingCarousel() {
   }
 
   return (
-    <div className="h-[90vh] bg-gray-100">
+    <div className="h-[80vh] bg-gray-100">
       {/* Main Carousel Container */}
-      <div className="relative w-full h-[90vh] overflow-hidden">
+      <div className="relative w-full h-[80vh] overflow-hidden">
         {/* Slides */}
         <div
           ref={carouselRef}
