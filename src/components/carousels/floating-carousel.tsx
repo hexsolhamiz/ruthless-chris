@@ -144,7 +144,7 @@ export default function FloatingCarousel() {
             height: "80px",
           }}
         >
-          {visibleSlides.map((slide, index) => {
+          {visibleSlides.map((slide) => {
             const relativePos = slide.relativePosition
             const isActive = relativePos === 0
             const distance = Math.abs(relativePos)
@@ -165,7 +165,7 @@ export default function FloatingCarousel() {
                     translateX(${
                       relativePos < 0 ? `-${distance * 4}px` : relativePos > 0 ? `${distance * 4}px` : "0px"
                     })
-                    translateY(${isActive ? "20px" : distance === 1 ? "-10px" : "-40px"})
+                    translateY(${isActive ? "20px" : distance === 1 ? "-10px" : "-30px"})
                     rotateY(${relativePos < 0 ? "-20deg" : relativePos > 0 ? "20deg" : "0deg"})
                     scale(${isActive ? "1.2" : distance === 1 ? "0.9" : "0.8"})
                   `,
