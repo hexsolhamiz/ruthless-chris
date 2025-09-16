@@ -3,7 +3,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className='w-full max-w-7xl mx-auto'>
+    <div className='h-full w-full max-w-7xl mx-auto mt-0 pt-0'>
       <MobileCarousel />
     </div>
   )

@@ -7,12 +7,31 @@ export default function MobileCarousel() {
   const [isDragging, setIsDragging] = useState(false)
   const [startX, setStartX] = useState(0)
   const [translateX, setTranslateX] = useState(0)
+  const [bgTranslateX, setBgTranslateX] = useState(0)
+  const [bgIsDragging, setBgIsDragging] = useState(false)
+  const [bgStartX, setBgStartX] = useState(0)
 
   const items = [
-    { icon: <Home size={28} />, color: "bg-blue-500" },
-    { icon: <User size={28} />, color: "bg-green-500" },
-    { icon: <Settings size={28} />, color: "bg-red-500" },
-    { icon: <Star size={28} />, color: "bg-yellow-500" },
+    { 
+      icon: <Home size={28} />, 
+      color: "bg-blue-500",
+      bgImage: "/slides/slide1.png"
+    },
+    { 
+      icon: <User size={28} />, 
+      color: "bg-green-500",
+      bgImage: "/slides/slide2.png"
+    },
+    { 
+      icon: <Settings size={28} />, 
+      color: "bg-red-500",
+      bgImage: "/slides/slide3.png"
+    },
+    { 
+      icon: <Star size={28} />, 
+      color: "bg-yellow-500",
+      bgImage: "/slides/slide4.png"
+    },
   ]
 
   // Create looped array for infinite scroll effect
@@ -52,6 +71,36 @@ export default function MobileCarousel() {
     setIsDragging(false)
     setTranslateX(0)
     setStartX(0)
+  }
+
+  // Background carousel handlers
+  const handleBgMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    setBgIsDragging(true)
+    const clientX = 'clientX' in e ? e.clientX : e.touches[0]?.clientX || 0
+    setBgStartX(clientX)
+  }
+
+  const handleBgMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    if (!bgIsDragging) return
+    const clientX = 'clientX' in e ? e.clientX : e.touches[0]?.clientX || 0
+    const deltaX = clientX - bgStartX
+    setBgTranslateX(deltaX)
+  }
+
+  const handleBgMouseUp = () => {
+    if (!bgIsDragging) return
+    
+    const threshold = 100 // Larger threshold for background swipe
+    
+    if (bgTranslateX > threshold) {
+      setCurrentIndex(prev => (prev - 1 + items.length) % items.length)
+    } else if (bgTranslateX < -threshold) {
+      setCurrentIndex(prev => (prev + 1) % items.length)
+    }
+    
+    setBgIsDragging(false)
+    setBgTranslateX(0)
+    setBgStartX(0)
   }
 
   const getSlideStyle = (index: number) => {
@@ -99,29 +148,63 @@ export default function MobileCarousel() {
   }
 
   return (
-    <div className="w-full max-w-sm mx-auto py-8">
+    <div className="w-full h-screen max-w-sm mx-auto relative">
+      {/* Background Image Carousel */}
       <div 
-        className="relative h-24 overflow-hidden cursor-grab active:cursor-grabbing select-none"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleMouseDown}
-        onTouchMove={handleMouseMove}
-        onTouchEnd={handleMouseUp}
+        className="absolute inset-0 w-full h-full overflow-hidden cursor-grab active:cursor-grabbing rounded-2xl"
+        onMouseDown={handleBgMouseDown}
+        onMouseMove={handleBgMouseMove}
+        onMouseUp={handleBgMouseUp}
+        onMouseLeave={handleBgMouseUp}
+        onTouchStart={handleBgMouseDown}
+        onTouchMove={handleBgMouseMove}
+        onTouchEnd={handleBgMouseUp}
       >
-        <div className="absolute inset-0 flex items-center justify-center">
-          {loopedItems.map((item, index) => (
+        <div 
+          className="flex w-full h-full transition-transform duration-300 ease-out"
+          style={{ 
+            transform: `translateX(${-currentIndex * 100 + (bgTranslateX / window.innerWidth) * 100}%)` 
+          }}
+        >
+          {items.concat(items).map((item, index) => (
             <div
               key={index}
-              className="absolute transition-all duration-300 ease-out"
-              style={getSlideStyle(index)}
+              className="min-w-full h-screen bg-cover bg-center relative"
+              style={{ 
+                backgroundImage: `url(${item.bgImage})`,
+              }}
             >
-              <div className={`w-16 h-16 flex items-center justify-center rounded-full ${item.color} text-white shadow-md cursor-pointer`}>
-                {item.icon}
-              </div>
+              <div className="absolute inset-0"></div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Icon Carousel */}
+      <div className="relative z-10 py-8">
+        <div 
+          className="relative h-24 overflow-hidden cursor-grab active:cursor-grabbing select-none"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchMove={handleMouseMove}
+          onTouchEnd={handleMouseUp}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            {loopedItems.map((item, index) => (
+              <div
+                key={index}
+                className="absolute transition-all duration-300 ease-out"
+                style={getSlideStyle(index)}
+              >
+                <div className={`w-16 h-16 flex items-center justify-center rounded-full ${item.color} text-white shadow-md cursor-pointer`}>
+                  {item.icon}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
