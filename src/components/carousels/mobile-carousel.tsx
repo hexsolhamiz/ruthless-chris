@@ -160,6 +160,8 @@ export default function MobileCarousel() {
         onTouchMove={handleBgMouseMove}
         onTouchEnd={handleBgMouseUp}
       >
+      {// new line added here 
+      } 
         <div 
           className="flex w-full h-full transition-transform duration-300 ease-out"
           style={{ 
