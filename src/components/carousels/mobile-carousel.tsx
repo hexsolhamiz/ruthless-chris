@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Home, User, Settings, Star } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
 
 export default function MobileCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);

@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { Hero } from "@/components/static/hero";
 import { Sidebar } from "@/components/static/sidebar";
-import FloatingCarousel from "@/components/carousels/floating-carousel";
+// import FloatingCarousel from "@/components/carousels/floating-carousel";
 import { BottomNavigation } from "@/components/static/bottom-navigation";
 import { MusicMadness } from "@/components/music/music-madness";
 import MusicShowCarousel from "@/components/carousels/music-show-carousel";
 import { LiveStream } from "@/components/static/live-stream";
 import { Footer } from "@/components/static/footer";
+import MobileCarousel from "@/components/carousels/mobile-carousel";
 
 export default function RuthlessChrisPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,7 +28,7 @@ export default function RuthlessChrisPage() {
         <Footer />
       </div>
       <div className="md:hidden h-[90vh] flex flex-col justify-between">
-        <FloatingCarousel />
+        <MobileCarousel />
         <BottomNavigation />
       </div>
     </>
