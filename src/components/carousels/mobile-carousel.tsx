@@ -164,8 +164,8 @@ export default function MobileCarousel() {
       } 
         <div 
           className="flex w-full h-full transition-transform duration-300 ease-out"
-          style={{ 
-            transform: `translateX(${-currentIndex * 100 + (bgTranslateX / window.innerWidth) * 100}%)` 
+         style={{ 
+            transform: `translateX(${-currentIndex * 100 + (bgTranslateX / 400) * 100}%)` 
           }}
         >
           {items.concat(items).map((item, index) => (
