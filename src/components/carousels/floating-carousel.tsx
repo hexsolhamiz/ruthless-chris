@@ -17,7 +17,7 @@ export default function FloatingCarousel() {
   const [startX, setStartX] = useState(0)
   const [currentX, setCurrentX] = useState(0)
   const [dragOffset, setDragOffset] = useState(0)
-  const carouselRef = useRef(null)
+  const carouselRef = useRef<HTMLDivElement>(null)
 
   const slides = [
     {
@@ -68,49 +68,84 @@ export default function FloatingCarousel() {
     return () => clearInterval(interval)
   }, [isAutoPlaying, isDragging, slides.length])
 
+  // Add global mouse/touch event listeners for better drag handling
+  useEffect(() => {
+    const handleGlobalMove = (e: MouseEvent | TouchEvent) => {
+      if (!isDragging) return
+      e.preventDefault()
+      
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
+      setCurrentX(clientX)
+      const diff = clientX - startX
+      setDragOffset(diff)
+    }
+
+    const handleGlobalEnd = () => {
+      if (!isDragging) return
+
+      setIsDragging(false)
+      const diff = currentX - startX
+      const threshold = 80 // Reduced threshold for easier swiping
+
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) {
+          // Swipe right - go to previous slide
+          setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+        } else {
+          // Swipe left - go to next slide
+          setCurrentSlide((prev) => (prev + 1) % slides.length)
+        }
+      }
+
+      setDragOffset(0)
+      setStartX(0)
+      setCurrentX(0)
+    }
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleGlobalMove, { passive: false })
+      document.addEventListener('mouseup', handleGlobalEnd)
+      document.addEventListener('touchmove', handleGlobalMove, { passive: false })
+      document.addEventListener('touchend', handleGlobalEnd)
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleGlobalMove)
+      document.removeEventListener('mouseup', handleGlobalEnd)
+      document.removeEventListener('touchmove', handleGlobalMove)
+      document.removeEventListener('touchend', handleGlobalEnd)
+    }
+  }, [isDragging, startX, currentX, slides.length])
+
   const goToSlide = (index: number) => {
+    if (isDragging) return // Prevent navigation during drag
     setCurrentSlide(index)
     setIsAutoPlaying(false)
+    
+    // Resume auto-play after 5 seconds
+    setTimeout(() => {
+      setIsAutoPlaying(true)
+    }, 5000)
   }
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault()
     setIsDragging(true)
     setIsAutoPlaying(false)
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX
     setStartX(clientX)
     setCurrentX(clientX)
+    
+    // Add grabbing cursor to body
+    document.body.style.cursor = 'grabbing'
   }
 
-  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDragging) return
-
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX
-    setCurrentX(clientX)
-    const diff = clientX - startX
-    setDragOffset(diff)
-  }
-
-  const handleDragEnd = () => {
-    if (!isDragging) return
-
-    setIsDragging(false)
-    const diff = currentX - startX
-    const threshold = 100
-
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        // Swipe right - go to previous slide (with looping)
-        setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
-      } else {
-        // Swipe left - go to next slide (with looping)
-        setCurrentSlide((prev) => (prev + 1) % slides.length)
-      }
+  // Clean up cursor when drag ends
+  useEffect(() => {
+    if (!isDragging) {
+      document.body.style.cursor = ''
     }
-
-    setDragOffset(0)
-    setStartX(0)
-    setCurrentX(0)
-  }
+  }, [isDragging])
 
   // Tilted Navigation Component
   const TiltedNavigation = () => {
@@ -134,7 +169,7 @@ export default function FloatingCarousel() {
     const visibleSlides = getVisibleSlides()
 
     return (
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-10">
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
         <div
           className="flex items-end justify-center"
           style={{
@@ -153,7 +188,7 @@ export default function FloatingCarousel() {
               <button
                 key={`${slide.id}-${slide.originalIndex}`}
                 onClick={() => goToSlide(slide.originalIndex)}
-                className={`relative rounded-full p-0 border-2 overflow-hidden ${
+                className={`relative rounded-full p-0 border-2 overflow-hidden transition-all duration-300 ease-out ${
                   isActive
                     ? "w-16 h-16 border-white shadow-2xl z-30"
                     : distance === 1
@@ -179,7 +214,7 @@ export default function FloatingCarousel() {
                   src={slide.image || "/placeholder.svg"}
                   alt={slide.title}
                   className="w-full h-full object-cover rounded-full"
-                  style={{ transition: "none" }}
+                  draggable={false}
                 />
 
                 {/* Active indicator glow */}
@@ -211,39 +246,63 @@ export default function FloatingCarousel() {
     <div className="h-[80vh] bg-gray-100">
       {/* Main Carousel Container */}
       <div className="relative w-full h-[80vh] overflow-hidden">
+        {/* Drag Overlay - This captures drag events */}
+        <div
+          className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing"
+          style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+          onMouseDown={handleDragStart}
+          onTouchStart={handleDragStart}
+        />
+
         {/* Slides */}
         <div
           ref={carouselRef}
-          className="flex h-full transition-transform duration-700 ease-in-out cursor-grab active:cursor-grabbing"
+          className="flex h-full transition-transform duration-300 ease-out select-none"
           style={{
             transform: `translateX(calc(-${currentSlide * 100}% + ${isDragging ? dragOffset : 0}px))`,
             transition: isDragging ? "none" : "transform 0.3s ease-out",
           }}
-          onMouseDown={handleDragStart}
-          onMouseMove={handleDragMove}
-          onMouseUp={handleDragEnd}
-          onMouseLeave={handleDragEnd}
-          onTouchStart={handleDragStart}
-          onTouchMove={handleDragMove}
-          onTouchEnd={handleDragEnd}
         >
-          {slides.map((slide) => (
-            <div key={slide.id} className={`min-w-full h-full flex items-center justify-center`}>
+          {slides.map((slide, index) => (
+            <div 
+              key={slide.id} 
+              className="min-w-full h-full flex items-center justify-center"
+              style={{
+                // Add subtle scaling effect during drag
+                transform: isDragging ? `scale(${0.98 + Math.abs(dragOffset) / 5000})` : 'scale(1)',
+                opacity: isDragging ? 0.9 : 1,
+                transition: isDragging ? "none" : "transform 0.3s ease-out, opacity 0.3s ease-out"
+              }}
+            >
+              <div className="w-full h-full pointer-events-none">
                 {slide.content}
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Tilted Navigation - Now Separated */}
+        {/* Tilted Navigation - Higher z-index */}
         <TiltedNavigation />
 
         {/* Progress Bar */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-white/20 z-10">
+        <div className="absolute top-0 left-0 w-full h-1 bg-white/20 z-15">
           <div
-            className="h-full bg-white transition-all duration-700 ease-out"
-            style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}
+            className="h-full bg-white transition-all duration-300 ease-out"
+            style={{ 
+              width: `${((currentSlide + 1) / slides.length) * 100}%`,
+              transition: isDragging ? "none" : "width 0.3s ease-out"
+            }}
           />
         </div>
+
+        {/* Drag Indicator */}
+        {isDragging && (
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+            <div className="bg-black/50 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm">
+              {dragOffset > 80 ? '← Previous' : dragOffset < -80 ? 'Next →' : 'Drag to navigate'}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
