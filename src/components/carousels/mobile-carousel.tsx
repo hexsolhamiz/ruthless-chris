@@ -148,10 +148,10 @@ export default function MobileCarousel() {
   }
 
   return (
-    <div className="w-full h-screen max-w-sm mx-auto relative">
+    <div className="w-full h-screen max-w-md mx-auto relative">
       {/* Background Image Carousel */}
       <div 
-        className="absolute inset-0 w-full h-full overflow-hidden cursor-grab active:cursor-grabbing rounded-2xl"
+        className="absolute inset-0 w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
         onMouseDown={handleBgMouseDown}
         onMouseMove={handleBgMouseMove}
         onMouseUp={handleBgMouseUp}
