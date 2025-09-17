@@ -148,7 +148,7 @@ export default function MobileCarousel() {
       return {
         transform: `translateX(${baseTranslateX}px) translateY(-5px) scale(0.9)`,
         zIndex: 5,
-        opacity: 1,
+        opacity: 0.5,
       };
     }
     // Outer slides: most elevated and smallest

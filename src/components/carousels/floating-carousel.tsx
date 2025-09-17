@@ -56,6 +56,20 @@ export default function FloatingCarousel() {
       color: "bg-gradient-to-br from-indigo-500 to-blue-600",
       image: "/slides/slide2.png",
     },
+    {
+      id: 6,
+      title: "Slide Six",
+      content: <LiveStream  videoUrl="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />,
+      color: "",
+      image: "/slides/slide4.png",
+    },
+    {
+      id: 7,
+      title: "Slide Five",
+      content: <EventsCarousel />,
+      color: "bg-gradient-to-br from-indigo-500 to-blue-600",
+      image: "/slides/slide2.png",
+    },
   ]
 
   // Auto-play functionality
