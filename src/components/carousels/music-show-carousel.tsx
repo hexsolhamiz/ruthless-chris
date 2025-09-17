@@ -33,7 +33,7 @@ export default function MusicShowCarousel() {
         {
             data.map((item) => (
                 <SwiperSlide key={item.id}>
-                    <Image src={item.url} alt={`Slide ${item.id}`} layout="responsive" width={400} height={200} className='w-full h-full'/>
+                    <Image src={item.url} alt={`Slide ${item.id}`} width={400} height={200} className='w-full h-full'/>
                 </SwiperSlide>
             ))
         }

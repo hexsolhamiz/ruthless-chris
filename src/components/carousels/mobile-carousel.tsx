@@ -33,15 +33,20 @@ export default function MobileCarousel() {
       color: "bg-yellow-500",
       bgImage: "/slides/slide4.png",
     },
+    {
+      icon: <Settings size={28} />,
+      color: "bg-red-500",
+      bgImage: "/slides/slide3.png",
+    },
   ];
 
   // Create looped array for infinite scroll effect
-  const getLoopedItems = () => {
-    const extendedItems = [...items, ...items, ...items]; // Triple the items for smooth looping
-    return extendedItems;
-  };
+  // const getLoopedItems = () => {
+  //   const extendedItems = [...items, ...items, ...items]; // Triple the items for smooth looping
+  //   return extendedItems;
+  // };
 
-  const loopedItems = getLoopedItems();
+  // const loopedItems = getLoopedItems();
   const slideWidth = 88; // 64px width + 24px margin
   const centerOffset = items.length; // Start from middle set
 
@@ -115,7 +120,7 @@ export default function MobileCarousel() {
   const getSlideStyle = (index: number) => {
     // Calculate position relative to center
     // const actualIndex = index % items.length
-    const currentPos = (currentIndex + centerOffset) % loopedItems.length;
+    const currentPos = (currentIndex + centerOffset) % items.length;
     const slidePos = index;
 
     // Calculate distance from center considering looping
@@ -180,7 +185,7 @@ export default function MobileCarousel() {
             }%)`,
           }}
         >
-          {items.concat(items).map((item, index) => (
+          {items.map((item, index) => (
             <div
               key={index}
               className="min-w-full h-screen bg-cover bg-center relative"
@@ -207,7 +212,7 @@ export default function MobileCarousel() {
           onTouchEnd={handleMouseUp}
         >
           <div className="absolute inset-0 flex items-center justify-center">
-            {loopedItems.map((item, index) => (
+            {items.map((item, index) => (
               <div
                 key={index}
                 className="absolute transition-all duration-300 ease-out"

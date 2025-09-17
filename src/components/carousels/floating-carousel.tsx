@@ -11,6 +11,7 @@ import { EventsCarousel } from "./events-carousel"
 
 export default function FloatingCarousel() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  console.log(isSidebarOpen)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [isDragging, setIsDragging] = useState(false)
@@ -263,7 +264,7 @@ export default function FloatingCarousel() {
             transition: isDragging ? "none" : "transform 0.3s ease-out",
           }}
         >
-          {slides.map((slide, index) => (
+          {slides.map((slide) => (
             <div 
               key={slide.id} 
               className="min-w-full h-full flex items-center justify-center"
