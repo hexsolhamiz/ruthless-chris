@@ -47,7 +47,7 @@ export default function MobileCarousel() {
 // ];
 
   // const loopedItems = getLoopedItems();
-  const slideWidth = 88; // 64px width + 24px margin
+  const slideWidth = 85; // 64px width + 24px margin
   const centerOffset = items.length; // Start from middle set
 
   const handleMouseDown = (
@@ -153,7 +153,7 @@ const getSlideStyle = (index: number) => {
   // Adjacent slides
   else if (Math.abs(distance) < 1.5) {
     return {
-      transform: `translateX(${baseTranslateX}px) translateY(-5px) scale(0.95)`,
+      transform: `translateX(${baseTranslateX}px) translateY(-1px) scale(1)`,
       zIndex: 10,
       opacity: 0.6,
       filter: "drop-shadow(0px 4px 12px rgba(0,0,0,0.25))",
@@ -162,7 +162,7 @@ const getSlideStyle = (index: number) => {
   // Far slides
   else {
     return {
-      transform: `translateX(${baseTranslateX}px) translateY(-10px) scale(0.8)`,
+      transform: `translateX(${baseTranslateX}px) translateY(-3px) scale(0.8)`,
       zIndex: 1,
       opacity: 0.3,
       filter: "drop-shadow(0px 2px 6px rgba(0,0,0,0.15))",
