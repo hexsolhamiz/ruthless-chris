@@ -118,45 +118,38 @@ export default function MobileCarousel() {
   };
 
   const getSlideStyle = (index: number) => {
-    // Calculate position relative to center
-    // const actualIndex = index % items.length
     const currentPos = (currentIndex + centerOffset) % items.length;
     const slidePos = index;
 
-    // Calculate distance from center considering looping
     let distance = slidePos - currentPos;
 
-    // Adjust for looping wrap-around
     if (distance > items.length / 2) {
       distance -= items.length;
     } else if (distance < -items.length / 2) {
       distance += items.length;
     }
 
-    const baseTranslateX = distance * slideWidth + translateX;
+    // Combine foreground drag and background drag for sync movement
+    const baseTranslateX =
+      distance * slideWidth + translateX + bgTranslateX / 4;
 
-    // Active slide (center): lower and larger
     if (distance === 0) {
       return {
         transform: `translateX(${baseTranslateX}px) translateY(10px) scale(1.1)`,
         zIndex: 10,
         opacity: 1,
       };
-    }
-    // Adjacent slides: elevated and smaller
-    else if (Math.abs(distance) === 1) {
+    } else if (Math.abs(distance) === 1) {
       return {
         transform: `translateX(${baseTranslateX}px) translateY(-5px) scale(0.9)`,
         zIndex: 5,
-        opacity: 0.5,
+        opacity: 0.3,
       };
-    }
-    // Outer slides: most elevated and smallest
-    else {
+    } else {
       return {
         transform: `translateX(${baseTranslateX}px) translateY(-10px) scale(0.8)`,
         zIndex: 1,
-        opacity: Math.abs(distance) > 2 ? 0.5 : 0.8,
+        opacity: Math.abs(distance) > 2 ? 0.1 : 0.3,
       };
     }
   };
@@ -220,10 +213,11 @@ export default function MobileCarousel() {
               >
                 <div
                   className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1  text-white shadow-md cursor-pointer`}
-                  style={{backgroundImage: `url(${item.bgImage})`, backgroundSize: 'cover'}}
-                >
-                  
-                </div>
+                  style={{
+                    backgroundImage: `url(${item.bgImage})`,
+                    backgroundSize: "cover",
+                  }}
+                ></div>
               </div>
             ))}
           </div>
