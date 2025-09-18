@@ -150,7 +150,6 @@ export default function MobileCarousel() {
       handleChangeSlide(nextIndex); // 👈 use new handler
     }
     setIsTransitioning(true);
-
     setBgIsDragging(false);
     setBgTranslateX(0);
     setBgStartX(0);
@@ -196,7 +195,7 @@ export default function MobileCarousel() {
       return {
         transform: `translateX(${baseTranslateX}px) translateY(-1px) scale(1)`,
         zIndex: 10,
-        opacity: 0.6,
+        opacity: 1,
         filter: "drop-shadow(0px 4px 12px rgba(0,0,0,0.25))",
         transition: "all 0.3s ease",
       };
@@ -265,7 +264,7 @@ export default function MobileCarousel() {
         >
           {/* Inner: clips X only */}
           <div className="absolute inset-0  bg-none flex items-start justify-center overflow-x-hidden">
-            {items.map((item, index) => (
+            {extendedItems.map((item, index) => (
               <div
                 key={index}
                 className="absolute transition-all duration-300 ease-out"
