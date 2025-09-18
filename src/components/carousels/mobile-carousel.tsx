@@ -101,58 +101,70 @@ export default function MobileCarousel() {
     setBgTranslateX(deltaX);
   };
 
-  const handleBgMouseUp = () => {
-    if (!bgIsDragging) return;
+ const handleBgMouseUp = () => {
+  if (!bgIsDragging) return;
 
-    const threshold = 100; // Larger threshold for background swipe
+  const threshold = 100;
 
-    if (bgTranslateX > threshold) {
-      setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
-    } else if (bgTranslateX < -threshold) {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
+  setCurrentIndex((prev) => {
+    let nextIndex = prev;
+
+    if (bgTranslateX > threshold && prev > 0) {
+      // swipe right → previous slide
+      nextIndex = prev - 1;
+    } else if (bgTranslateX < -threshold && prev < items.length - 1) {
+      // swipe left → next slide
+      nextIndex = prev + 1;
     }
 
-    setBgIsDragging(false);
-    setBgTranslateX(0);
-    setBgStartX(0);
-  };
+    return nextIndex;
+  });
 
-  const getSlideStyle = (index: number) => {
-  const currentPos = (currentIndex + centerOffset) % items.length;
-  const slidePos = index;
+  setBgIsDragging(false);
+  setBgTranslateX(0);
+  setBgStartX(0);
+};
 
-  let distance = slidePos - currentPos;
+const getSlideStyle = (index: number) => {
+  // progress = currentIndex plus fractional drag offset
+  const dragOffset = (translateX + bgTranslateX / 4) / slideWidth;
+  const progress = currentIndex - dragOffset;
 
+  let distance = index - progress;
+
+  // Wrap distance (so icons don’t jump when looping)
   if (distance > items.length / 2) {
     distance -= items.length;
   } else if (distance < -items.length / 2) {
     distance += items.length;
   }
 
-  const baseTranslateX = distance * slideWidth + translateX + bgTranslateX / 2;
+  const baseTranslateX = distance * slideWidth;
 
-  if (distance === 0) {
-    // Center (active) icon: big + strong shadow
+  // Center slide
+  if (Math.abs(distance) < 0.5) {
     return {
-      transform: `translateX(${baseTranslateX}px) translateY(15px) scale(1.3)`,
+      transform: `translateX(${baseTranslateX}px) translateY(15px) scale(1.25)`,
       zIndex: 20,
       opacity: 1,
-      filter: "drop-shadow(0px 8px 20px rgba(0,0,0,0.4))",
+      filter: "drop-shadow(0px 8px 24px rgba(0,0,0,0.45))",
     };
-  } else if (Math.abs(distance) === 1) {
-    // Adjacent icons: medium size + softer shadow
+  }
+  // Adjacent slides
+  else if (Math.abs(distance) < 1.5) {
     return {
-      transform: `translateX(${baseTranslateX}px) translateY(-5px) scale(0.9)`,
+      transform: `translateX(${baseTranslateX}px) translateY(-5px) scale(0.95)`,
       zIndex: 10,
-      opacity: 0.5,
-      filter: "drop-shadow(0px 4px 10px rgba(0,0,0,0.25))",
+      opacity: 0.6,
+      filter: "drop-shadow(0px 4px 12px rgba(0,0,0,0.25))",
     };
-  } else {
-    // Far icons: smaller + faint shadow
+  }
+  // Far slides
+  else {
     return {
-      transform: `translateX(${baseTranslateX}px) translateY(-15px) scale(0.75)`,
+      transform: `translateX(${baseTranslateX}px) translateY(-10px) scale(0.8)`,
       zIndex: 1,
-      opacity: Math.abs(distance) > 2 ? 0.15 : 0.18,
+      opacity: 0.3,
       filter: "drop-shadow(0px 2px 6px rgba(0,0,0,0.15))",
     };
   }
