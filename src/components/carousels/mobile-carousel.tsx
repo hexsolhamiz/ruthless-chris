@@ -5,6 +5,8 @@ import { Home, User, Settings, Star } from "lucide-react";
 
 export default function MobileCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(0);
+
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
@@ -40,15 +42,15 @@ export default function MobileCarousel() {
     },
   ];
 
-//  const extendedItems = [
-//   items[items.length - 1], // clone last at start
-//   ...items,
-//   items[0], // clone first at end
-// ];
+  //  const extendedItems = [
+  //   items[items.length - 1], // clone last at start
+  //   ...items,
+  //   items[0], // clone first at end
+  // ];
 
   // const loopedItems = getLoopedItems();
   const slideWidth = 85; // 64px width + 24px margin
-  const centerOffset = items.length; // Start from middle set
+  // const centerOffset = items.length; // Start from middle set
 
   const handleMouseDown = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
@@ -71,11 +73,16 @@ export default function MobileCarousel() {
     if (!isDragging) return;
 
     const threshold = slideWidth / 3;
+    let nextIndex = currentIndex;
 
     if (translateX > threshold) {
-      setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
+      nextIndex = (currentIndex - 1 + items.length) % items.length;
     } else if (translateX < -threshold) {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
+      nextIndex = (currentIndex + 1) % items.length;
+    }
+
+    if (nextIndex !== currentIndex) {
+      handleChangeSlide(nextIndex); // 👈 use new handler
     }
 
     setIsDragging(false);
@@ -101,75 +108,82 @@ export default function MobileCarousel() {
     setBgTranslateX(deltaX);
   };
 
- const handleBgMouseUp = () => {
-  if (!bgIsDragging) return;
+  const handleBgMouseUp = () => {
+    if (!bgIsDragging) return;
 
-  const threshold = 100;
+    const threshold = 100;
+    let nextIndex = currentIndex;
 
-  setCurrentIndex((prev) => {
-    let nextIndex = prev;
-
-    if (bgTranslateX > threshold && prev > 0) {
-      // swipe right → previous slide
-      nextIndex = prev - 1;
-    } else if (bgTranslateX < -threshold && prev < items.length - 1) {
-      // swipe left → next slide
-      nextIndex = prev + 1;
+    if (bgTranslateX > threshold && currentIndex > 0) {
+      nextIndex = currentIndex - 1;
+    } else if (bgTranslateX < -threshold && currentIndex < items.length - 1) {
+      nextIndex = currentIndex + 1;
     }
 
-    return nextIndex;
-  });
+    if (nextIndex !== currentIndex) {
+      handleChangeSlide(nextIndex); // 👈 use new handler
+    }
 
-  setBgIsDragging(false);
-  setBgTranslateX(0);
-  setBgStartX(0);
-};
+    setBgIsDragging(false);
+    setBgTranslateX(0);
+    setBgStartX(0);
+  };
 
-const getSlideStyle = (index: number) => {
-  // progress = currentIndex plus fractional drag offset
-  const dragOffset = (translateX + bgTranslateX / 4) / slideWidth;
-  const progress = currentIndex - dragOffset;
+  const handleChangeSlide = (newIndex: number) => {
+    setPrevIndex(currentIndex);
+    setCurrentIndex(newIndex);
+  };
 
-  let distance = index - progress;
+  const getSlideClass = (index: number) => {
+    if (index === currentIndex) {
+      return "z-20 scale-100 translate-y-4 opacity-100 shadow-xl transition-all duration-300";
+    }
+    if (index === prevIndex) {
+      return "z-10 scale-75 opacity-80 translate-y-0 transition-all duration-300";
+    }
+    return "z-0 scale-90 opacity-30 translate-y-0 transition-all duration-300";
+  };
 
-  // Wrap distance (so icons don’t jump when looping)
-  if (distance > items.length / 2) {
-    distance -= items.length;
-  } else if (distance < -items.length / 2) {
-    distance += items.length;
-  }
+  const getSlideStyle = (index: number) => {
+    let distance = index - currentIndex;
 
-  const baseTranslateX = distance * slideWidth;
+    // Wrap for circular effect
+    if (distance > items.length / 2) distance -= items.length;
+    if (distance < -items.length / 2) distance += items.length;
 
-  // Center slide
-  if (Math.abs(distance) < 0.5) {
-    return {
-      transform: `translateX(${baseTranslateX}px) translateY(15px) scale(1.25)`,
-      zIndex: 20,
-      opacity: 1,
-      filter: "drop-shadow(0px 8px 24px rgba(0,0,0,0.45))",
-    };
-  }
-  // Adjacent slides
-  else if (Math.abs(distance) < 1.5) {
-    return {
-      transform: `translateX(${baseTranslateX}px) translateY(-1px) scale(1)`,
-      zIndex: 10,
-      opacity: 0.6,
-      filter: "drop-shadow(0px 4px 12px rgba(0,0,0,0.25))",
-    };
-  }
-  // Far slides
-  else {
+    const baseTranslateX = distance * slideWidth;
+
+    // Active icon (center)
+    if (distance === 0) {
+      return {
+        transform: `translateX(${baseTranslateX}px) translateY(15px) scale(1.25)`,
+        zIndex: 20,
+        opacity: 1,
+        filter: "drop-shadow(0px 8px 24px rgba(0,0,0,0.45))",
+        transition: "all 0.3s ease",
+      };
+    }
+
+    // Side icons
+    if (Math.abs(distance) === 1) {
+      return {
+        transform: `translateX(${baseTranslateX}px) translateY(-1px) scale(1)`,
+        zIndex: 10,
+        opacity: 0.6,
+        filter: "drop-shadow(0px 4px 12px rgba(0,0,0,0.25))",
+        transition: "all 0.3s ease",
+      };
+    }
+
+    // Far icons
     return {
       transform: `translateX(${baseTranslateX}px) translateY(-3px) scale(0.8)`,
       zIndex: 1,
       opacity: 0.3,
       filter: "drop-shadow(0px 2px 6px rgba(0,0,0,0.15))",
+      transition: "all 0.3s ease",
     };
-  }
-};
-
+  };
 
   return (
     <div className="w-full h-screen max-w-md mx-auto relative">
@@ -229,7 +243,9 @@ const getSlideStyle = (index: number) => {
                 style={getSlideStyle(index)}
               >
                 <div
-                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1  text-white shadow-md cursor-pointer`}
+                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1  text-white shadow-md cursor-pointer  ${getSlideClass(
+                    index
+                  )}`}
                   style={{
                     backgroundImage: `url(${item.bgImage})`,
                     backgroundSize: "cover",
