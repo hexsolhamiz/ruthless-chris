@@ -4,9 +4,9 @@ import { Home, User, Settings, Star } from "lucide-react";
 // import Image from "next/image";
 
 export default function MobileCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(1);
   const [prevIndex, setPrevIndex] = useState(0);
-
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
@@ -40,6 +40,31 @@ export default function MobileCarousel() {
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
     },
+    {
+      icon: <Home size={28} />,
+      color: "bg-blue-500",
+      bgImage: "/slides/slide1.png",
+    },
+    {
+      icon: <User size={28} />,
+      color: "bg-green-500",
+      bgImage: "/slides/slide2.png",
+    },
+    {
+      icon: <Settings size={28} />,
+      color: "bg-red-500",
+      bgImage: "/slides/slide3.png",
+    },
+    {
+      icon: <Star size={28} />,
+      color: "bg-yellow-500",
+      bgImage: "/slides/slide4.png",
+    },
+    {
+      icon: <Settings size={28} />,
+      color: "bg-red-500",
+      bgImage: "/slides/slide3.png",
+    },
   ];
 
   //  const extendedItems = [
@@ -47,6 +72,7 @@ export default function MobileCarousel() {
   //   ...items,
   //   items[0], // clone first at end
   // ];
+  const extendedItems = [items[items.length - 1], ...items, items[0]];
 
   // const loopedItems = getLoopedItems();
   const slideWidth = 85; // 64px width + 24px margin
@@ -84,7 +110,7 @@ export default function MobileCarousel() {
     if (nextIndex !== currentIndex) {
       handleChangeSlide(nextIndex); // 👈 use new handler
     }
-
+    setIsTransitioning(true);
     setIsDragging(false);
     setTranslateX(0);
     setStartX(0);
@@ -123,6 +149,7 @@ export default function MobileCarousel() {
     if (nextIndex !== currentIndex) {
       handleChangeSlide(nextIndex); // 👈 use new handler
     }
+    setIsTransitioning(true);
 
     setBgIsDragging(false);
     setBgTranslateX(0);
@@ -136,7 +163,7 @@ export default function MobileCarousel() {
 
   const getSlideClass = (index: number) => {
     if (index === currentIndex) {
-      return "z-20 scale-100 translate-y-4 opacity-100 shadow-xl transition-all duration-300";
+      return "z-20 scale-100 translate-y-1 opacity-100 shadow-xl transition-all duration-300";
     }
     if (index === prevIndex) {
       return "z-10 scale-75 opacity-80 translate-y-0 transition-all duration-300";
@@ -209,7 +236,7 @@ export default function MobileCarousel() {
             }%)`,
           }}
         >
-          {items.map((item, index) => (
+          {extendedItems.map((item, index) => (
             <div
               key={index}
               className="min-w-full h-screen bg-cover bg-center relative"
@@ -225,8 +252,9 @@ export default function MobileCarousel() {
 
       {/* Icon Carousel */}
       <div className="relative z-10 py-8">
+        {/* Outer: allows Y overflow (for shadows above/below) */}
         <div
-          className="relative h-24 overflow-visible cursor-grab active:cursor-grabbing select-none"
+          className="relative h-44 overflow-visible cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -235,7 +263,8 @@ export default function MobileCarousel() {
           onTouchMove={handleMouseMove}
           onTouchEnd={handleMouseUp}
         >
-          <div className="absolute inset-0 flex items-center justify-center">
+          {/* Inner: clips X only */}
+          <div className="absolute inset-0  bg-none flex items-start justify-center overflow-x-hidden">
             {items.map((item, index) => (
               <div
                 key={index}
@@ -243,14 +272,14 @@ export default function MobileCarousel() {
                 style={getSlideStyle(index)}
               >
                 <div
-                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1  text-white shadow-md cursor-pointer  ${getSlideClass(
+                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1 text-white shadow-md cursor-pointer ${getSlideClass(
                     index
                   )}`}
                   style={{
                     backgroundImage: `url(${item.bgImage})`,
                     backgroundSize: "cover",
                   }}
-                ></div>
+                />
               </div>
             ))}
           </div>
