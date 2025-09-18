@@ -40,11 +40,11 @@ export default function MobileCarousel() {
     },
   ];
 
-  // Create looped array for infinite scroll effect
-  // const getLoopedItems = () => {
-  //   const extendedItems = [...items, ...items, ...items]; // Triple the items for smooth looping
-  //   return extendedItems;
-  // };
+ const extendedItems = [
+  items[items.length - 5], // clone last at start
+  ...items,
+  items[0], // clone first at end
+];
 
   // const loopedItems = getLoopedItems();
   const slideWidth = 88; // 64px width + 24px margin
@@ -195,7 +195,7 @@ const getSlideStyle = (index: number) => {
             }%)`,
           }}
         >
-          {items.map((item, index) => (
+          {extendedItems.map((item, index) => (
             <div
               key={index}
               className="min-w-full h-screen bg-cover bg-center relative"
