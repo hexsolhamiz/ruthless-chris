@@ -118,41 +118,46 @@ export default function MobileCarousel() {
   };
 
   const getSlideStyle = (index: number) => {
-    const currentPos = (currentIndex + centerOffset) % items.length;
-    const slidePos = index;
+  const currentPos = (currentIndex + centerOffset) % items.length;
+  const slidePos = index;
 
-    let distance = slidePos - currentPos;
+  let distance = slidePos - currentPos;
 
-    if (distance > items.length / 2) {
-      distance -= items.length;
-    } else if (distance < -items.length / 2) {
-      distance += items.length;
-    }
+  if (distance > items.length / 2) {
+    distance -= items.length;
+  } else if (distance < -items.length / 2) {
+    distance += items.length;
+  }
 
-    // Combine foreground drag and background drag for sync movement
-    const baseTranslateX =
-      distance * slideWidth + translateX + bgTranslateX / 4;
+  const baseTranslateX = distance * slideWidth + translateX + bgTranslateX / 2;
 
-    if (distance === 0) {
-      return {
-        transform: `translateX(${baseTranslateX}px) translateY(10px) scale(1.1)`,
-        zIndex: 10,
-        opacity: 1,
-      };
-    } else if (Math.abs(distance) === 1) {
-      return {
-        transform: `translateX(${baseTranslateX}px) translateY(-5px) scale(0.9)`,
-        zIndex: 5,
-        opacity: 0.3,
-      };
-    } else {
-      return {
-        transform: `translateX(${baseTranslateX}px) translateY(-10px) scale(0.8)`,
-        zIndex: 1,
-        opacity: Math.abs(distance) > 2 ? 0.1 : 0.3,
-      };
-    }
-  };
+  if (distance === 0) {
+    // Center (active) icon: big + strong shadow
+    return {
+      transform: `translateX(${baseTranslateX}px) translateY(15px) scale(1.3)`,
+      zIndex: 20,
+      opacity: 1,
+      filter: "drop-shadow(0px 8px 20px rgba(0,0,0,0.4))",
+    };
+  } else if (Math.abs(distance) === 1) {
+    // Adjacent icons: medium size + softer shadow
+    return {
+      transform: `translateX(${baseTranslateX}px) translateY(-5px) scale(0.9)`,
+      zIndex: 10,
+      opacity: 0.5,
+      filter: "drop-shadow(0px 4px 10px rgba(0,0,0,0.25))",
+    };
+  } else {
+    // Far icons: smaller + faint shadow
+    return {
+      transform: `translateX(${baseTranslateX}px) translateY(-15px) scale(0.75)`,
+      zIndex: 1,
+      opacity: Math.abs(distance) > 2 ? 0.15 : 0.18,
+      filter: "drop-shadow(0px 2px 6px rgba(0,0,0,0.15))",
+    };
+  }
+};
+
 
   return (
     <div className="w-full h-screen max-w-md mx-auto relative">
@@ -195,7 +200,7 @@ export default function MobileCarousel() {
       {/* Icon Carousel */}
       <div className="relative z-10 py-8">
         <div
-          className="relative h-24 overflow-hidden cursor-grab active:cursor-grabbing select-none"
+          className="relative h-24 overflow-visible cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
