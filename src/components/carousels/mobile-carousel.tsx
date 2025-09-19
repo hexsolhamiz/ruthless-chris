@@ -250,10 +250,10 @@ export default function MobileCarousel() {
       </div>
 
       {/* Icon Carousel */}
-      <div className="relative z-10 py-8">
+      <div className="relative z-10 bg-gradient-to-b from-blue-900 via-blue-950 h-34">
         {/* Outer: allows Y overflow (for shadows above/below) */}
         <div
-          className="relative h-44 overflow-visible cursor-grab active:cursor-grabbing select-none"
+          className="relative h-34 z-20 overflow-y-visible cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -263,7 +263,7 @@ export default function MobileCarousel() {
           onTouchEnd={handleMouseUp}
         >
           {/* Inner: clips X only */}
-          <div className="absolute inset-0  bg-none flex items-start justify-center overflow-x-hidden">
+          <div className="absolute inset-4 bg-none flex items-start justify-center overflow-x-hidden">
             {extendedItems.map((item, index) => (
               <div
                 key={index}
