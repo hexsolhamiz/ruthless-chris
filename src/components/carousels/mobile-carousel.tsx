@@ -165,7 +165,7 @@ export default function MobileCarousel() {
       return "z-20 scale-100 translate-y-1 opacity-100 shadow-xl transition-all duration-300";
     }
     if (index === prevIndex) {
-      return "z-10 scale-80 opacity-0 translate-y-0 transition-all duration-300";
+      return "z-10 scale-80 opacity-90 translate-y-0 transition-all duration-300";
     }
     return "z-0 scale-90 opacity-90 translate-y-0 transition-all duration-300";
   };
