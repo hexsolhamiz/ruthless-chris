@@ -165,9 +165,9 @@ export default function MobileCarousel() {
       return "z-20 scale-100 translate-y-1 opacity-100 shadow-xl transition-all duration-300";
     }
     if (index === prevIndex) {
-      return "z-10 scale-75 opacity-80 translate-y-0 transition-all duration-300";
+      return "z-10 scale-80 opacity-0 translate-y-0 transition-all duration-300";
     }
-    return "z-0 scale-90 opacity-30 translate-y-0 transition-all duration-300";
+    return "z-0 scale-90 opacity-90 translate-y-0 transition-all duration-300";
   };
 
   const getSlideStyle = (index: number) => {
@@ -205,7 +205,7 @@ export default function MobileCarousel() {
     return {
       transform: `translateX(${baseTranslateX}px) translateY(-3px) scale(0.8)`,
       zIndex: 1,
-      opacity: 0.3,
+      opacity: 0.4,
       filter: "drop-shadow(0px 2px 6px rgba(0,0,0,0.15))",
       transition: "all 0.3s ease",
     };
