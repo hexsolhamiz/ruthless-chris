@@ -4,7 +4,7 @@ import { Home, User, Settings, Star } from "lucide-react";
 // import Image from "next/image";
 
 export default function MobileCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -72,7 +72,7 @@ export default function MobileCarousel() {
   //   ...items,
   //   items[0], // clone first at end
   // ];
-  const extendedItems = [items[items.length - 1], ...items, items[0]];
+  // const extendedItems = [items[items.length - 1], ...items, items[0]];
 
   // const loopedItems = getLoopedItems();
   const slideWidth = 85; // 64px width + 24px margin
@@ -235,7 +235,7 @@ export default function MobileCarousel() {
             }%)`,
           }}
         >
-          {extendedItems.map((item, index) => (
+          {items.map((item, index) => (
             <div
               key={index}
               className="min-w-full h-screen bg-cover bg-center relative"
@@ -264,7 +264,7 @@ export default function MobileCarousel() {
         >
           {/* Inner: clips X only */}
           <div className="absolute inset-4 bg-none flex items-start justify-center overflow-x-hidden">
-            {extendedItems.map((item, index) => (
+            {items.map((item, index) => (
               <div
                 key={index}
                 className="absolute transition-all duration-300 ease-out"
