@@ -269,6 +269,7 @@ export default function MobileCarousel() {
                 key={index}
                 className="absolute transition-all duration-300 ease-out"
                 style={getSlideStyle(index)}
+                onClick={() => handleChangeSlide(index)} 
               >
                 <div
                   className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1 text-white shadow-md cursor-pointer ${getSlideClass(
