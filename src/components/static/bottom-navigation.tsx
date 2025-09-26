@@ -17,7 +17,7 @@ export function BottomNavigation() {
   const [activeItem, setActiveItem] = useState("live")
 
   return (
-    <nav className="right-0 bg-white border-t border-border z-50">
+    <nav className="sticky bottom-0 w-full right-0 bg-white border-t border-border z-50">
       <div className="flex items-center justify-around px-2 py-2">
         {navigationItems.map((item) => {
           const Icon = item.icon

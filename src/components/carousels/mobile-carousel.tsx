@@ -1,6 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { Home, User, Settings, Star } from "lucide-react";
+import { Hero } from "../static/hero";
+import { SlideOne } from "../mobile/slide-one";
+import { SlideTwo } from "../mobile/slide-two";
+import { SlideThree } from "../mobile/slide-three";
+import { SlideFour } from "../mobile/slide-four";
 // import Image from "next/image";
 
 export default function MobileCarousel() {
@@ -19,51 +24,63 @@ export default function MobileCarousel() {
       icon: <Home size={28} />,
       color: "bg-blue-500",
       bgImage: "/slides/slide1.png",
+      content: <SlideOne />, // Example content
     },
     {
       icon: <User size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
+      content: <SlideTwo />
     },
+
     {
       icon: <Settings size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
+      content: <SlideThree />
+    
     },
     {
       icon: <Star size={28} />,
       color: "bg-yellow-500",
       bgImage: "/slides/slide4.png",
+      content: <SlideFour />
     },
     {
       icon: <Settings size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
+      content: <SlideThree />
     },
     {
       icon: <Home size={28} />,
       color: "bg-blue-500",
       bgImage: "/slides/slide1.png",
+      content: <SlideOne />
     },
     {
       icon: <User size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
+      content: <SlideTwo />
     },
     {
       icon: <Settings size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
+      content: <SlideThree />
     },
     {
       icon: <Star size={28} />,
       color: "bg-yellow-500",
       bgImage: "/slides/slide4.png",
+      content: <SlideFour />
     },
     {
       icon: <Settings size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
+      content: <SlideThree />
     },
   ];
 
@@ -212,12 +229,12 @@ export default function MobileCarousel() {
   };
 
   return (
-    <div className="w-full h-screen max-w-md mx-auto relative">
+    <div className="w-full min-h-screen max-w-md mx-auto relative">
       {/* Background Image Carousel */}
       <div
-        className="absolute inset-0 w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
-        onMouseDown={handleBgMouseDown}
-        onMouseMove={handleBgMouseMove}
+        className="w-full h-full overflow-x-hidden cursor-grab active:cursor-grabbing"
+        // onMouseDown={handleBgMouseDown}
+        // onMouseMove={handleBgMouseMove}
         onMouseUp={handleBgMouseUp}
         onMouseLeave={handleBgMouseUp}
         onTouchStart={handleBgMouseDown}
@@ -228,7 +245,7 @@ export default function MobileCarousel() {
           // new line added here
         }
         <div
-          className="flex w-full h-full transition-transform duration-300 ease-out"
+          className="flex w-full min-h-screen overflow-visible transition-transform duration-300 ease-out"
           style={{
             transform: `translateX(${
               -currentIndex * 100 + (bgTranslateX / 400) * 100
@@ -238,12 +255,13 @@ export default function MobileCarousel() {
           {items.map((item, index) => (
             <div
               key={index}
-              className="min-w-full h-screen bg-cover bg-center relative"
-              style={{
-                backgroundImage: `url(${item.bgImage})`,
-              }}
+              className="min-w-full min-h-screen bg-cover bg-center relative"
+              // style={{
+              //   backgroundImage: `url(${item.bgImage})`,
+              // }}
             >
-              <div className="absolute inset-0"></div>
+              <div>{item.content}</div>
+              {/* <div className="absolute inset-0"></div> */}
             </div>
           ))}
         </div>
@@ -255,15 +273,15 @@ export default function MobileCarousel() {
         <div
           className="relative h-34 z-20 overflow-y-visible cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
+          // onMouseMove={handleMouseMove}
+          // onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onTouchStart={handleMouseDown}
           onTouchMove={handleMouseMove}
           onTouchEnd={handleMouseUp}
         >
           {/* Inner: clips X only */}
-          <div className="absolute inset-4 bg-none flex items-start justify-center overflow-x-hidden">
+          <div className="fixed inset-4 bg-none flex items-start justify-center overflow-x-hidden">
             {items.map((item, index) => (
               <div
                 key={index}
