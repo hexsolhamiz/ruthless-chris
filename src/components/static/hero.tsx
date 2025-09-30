@@ -95,44 +95,44 @@ export function Hero({ onMenuClick }: HeroProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="text-white hover:bg-white/10 p-2"
+            className="text-white hover:cursor-pointer p-2 hover:bg-none"
             onClick={onMenuClick}
           >
             <Menu className="w-5 h-5" />
           </Button>
 
-          <div className="flex items-center space-x-1 text-sm">
-            <Radio className="w-4 h-4 text-cyan-400" />
+          <div className="flex items-center hover:cursor-pointer space-x-1 text-sm">
+            <Radio className="w-4 h-4 text-white" />
             <span>Live</span>
           </div>
 
-          <div className="flex items-center space-x-1 text-sm">
-            <Monitor className="w-4 h-4" />
+          <div className="flex items-center hover:cursor-pointer space-x-1 text-sm">
+            <Monitor className="w-4 h-4 text-white" />
             <span>Airplay</span>
           </div>
 
-          <div className="flex items-center space-x-1 text-sm">
-            <Info className="w-4 h-4" />
+          <div className="flex items-center hover:cursor-pointer space-x-1 text-sm">
+            <Info className="w-4 h-4 text-white" />
             <span>Info</span>
           </div>
         </div>
 
         {/* Center Branding */}
-        <div className="text-2xl font-bold tracking-wider">Ruthless Chris</div>
+        <div className="text-4xl mt-2 font-bold tracking-wider">Ruthless Chris</div>
 
         {/* Right Navigation */}
         <div className="flex items-center space-x-6 text-sm">
-          <div className="flex items-center space-x-1">
-            <Phone className="w-4 h-4" />
+          <div className="flex hover:cursor-pointer items-center space-x-1">
+            <Phone className="w-4 h-4 text-white" />
             <span>Phone</span>
           </div>
 
-          <div className="flex items-center space-x-1">
-            <Mail className="w-4 h-4" />
+          <div className="flex hover:cursor-pointer items-center space-x-1">
+            <Mail className="w-4 h-4 text-white" />
             <span>Email</span>
           </div>
 
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center hover:cursor-pointer space-x-1">
             <Share2 className="w-4 h-4" />
             <span>Share</span>
           </div>
@@ -203,17 +203,16 @@ export function Hero({ onMenuClick }: HeroProps) {
           </div>
         </div>
       </div>
-      
 
-     <div className="max-w-6xl mx-auto pb-12">
+      <div className="max-w-6xl mx-auto pb-12">
         <h1 className="text-4xl font-bold text-white mb-2 text-center">
           Track Info Here
         </h1>
-        <p className="text-lg text-white/90 text-center">
+        <p className="text-lg px-2 text-white/90 text-center">
           Your ultimate destination for live streams, music, and more. Explore
           our content and stay connected!
         </p>
-     </div>
+      </div>
 
       {/* Hidden Audio Element */}
       <audio

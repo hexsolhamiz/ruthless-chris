@@ -1,71 +1,52 @@
-"use client"
-
+"use client";
 
 interface LiveStreamProps {
-  videoUrl: string
-  title?: string
+  videoUrl: string;
+  title?: string;
 }
 
-
-export function LiveStream({ videoUrl, title = "Live Stream" }: LiveStreamProps) {
-
-
+export function LiveStream({
+  videoUrl,
+  title = "Live Stream",
+}: LiveStreamProps) {
   // Convert YouTube URL to embed format
   const getEmbedUrl = (url: string) => {
-    const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/)?.[1]
-    return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1` : url
-  }
+    const videoId = url.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/
+    )?.[1];
+    return videoId
+      ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`
+      : url;
+  };
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-center mx-auto bg-gray-900 overflow-hidden">
+    <div className="py-8 w-full min-h-[600px] flex flex-col justify-center mx-auto bg-black overflow-hidden">
       {/* Header */}
-      <div className="bg-gray-800 px-4 py-3 border-b border-gray-700">
-        <h2 className="text-white font-semibold text-lg">{title}</h2>
+      <div className="w-full max-w-7xl mx-auto flex justify-start px-4 pt-3 pb-1">
+        <h2 className="text-white text-start font-bold text-3xl py-2">{title}</h2>
       </div>
 
       {/* Main Content */}
       <div className="w-full flex flex-col lg:flex-row">
         {/* Video Player */}
-        <div className="w-full relative">
-          <div className="aspect-video bg-black relative">
+        <div className="max-w-7xl mx-auto lg:py-8 h-full w-full relative">
+          <div className="flex lg:flex-row flex-col aspect-video bg-black relative">
             <iframe
               src={getEmbedUrl(videoUrl)}
-              className="w-full h-full"
+              className="w-full lg:w-[70%] h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
 
-            {/* Overlay Text */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="text-white text-center px-4">
-                <h3 className="text-xl md:text-2xl font-bold mb-2 text-shadow-lg">
-                  I CAN FEEL THE PARADISE BEFORE MY WORLD IMPLODES
-                </h3>
-              </div>
-            </div>
-          </div>
-
-          {/* Audio Waveform Visualization */}
-          <div className="bg-gray-800 px-4 py-3 flex items-center justify-center">
-            <div className="flex items-end space-x-1 h-8">
-              {Array.from({ length: 40 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-sm animate-pulse"
-                  style={{
-                    width: "3px",
-                    height: `${Math.random() * 100 + 20}%`,
-                    animationDelay: `${i * 0.1}s`,
-                    animationDuration: `${1 + Math.random()}s`,
-                  }}
-                />
-              ))}
-            </div>
+            <iframe
+              src="https://www.youtube.com/live_chat?v=36YnV9STBqc&si=z59ATHulfbim8waW&embed_domain=localhost"
+              className="lg:w-[30%] w-full h-full bg-black"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
-
-    
       </div>
     </div>
-  )
+  );
 }

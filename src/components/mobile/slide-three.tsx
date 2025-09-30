@@ -5,7 +5,7 @@ import MusicShowCarousel from "../carousels/music-show-carousel";
 
 export const SlideThree = () => {
   return (
-    <div className="min-w-full min-h-screen flex flex-col items-center justify-center">
+    <div className="min-w-full  flex flex-col items-center justify-center">
       <MusicShowCarousel />
       <Hero onMenuClick={() => {}} />
       <MusicMadness />

@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { Home, User, Settings, Star } from "lucide-react";
-import { Hero } from "../static/hero";
 import { SlideOne } from "../mobile/slide-one";
 import { SlideTwo } from "../mobile/slide-two";
 import { SlideThree } from "../mobile/slide-three";
@@ -22,7 +21,7 @@ export default function MobileCarousel() {
   const items = [
     {
       icon: <Home size={28} />,
-      color: "bg-blue-500",
+      color: "bg-blue-500",      
       bgImage: "/slides/slide1.png",
       content: <SlideOne />, // Example content
     },
@@ -268,10 +267,10 @@ export default function MobileCarousel() {
       </div>
 
       {/* Icon Carousel */}
-      <div className="relative z-10 bg-gradient-to-b from-blue-900 via-blue-950 h-34">
+      <div className="relative z-10">
         {/* Outer: allows Y overflow (for shadows above/below) */}
         <div
-          className="relative h-34 z-20 overflow-y-visible cursor-grab active:cursor-grabbing select-none"
+          className="relative z-20 overflow-y-visible cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
           // onMouseMove={handleMouseMove}
           // onMouseUp={handleMouseUp}
