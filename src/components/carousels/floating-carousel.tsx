@@ -7,7 +7,6 @@ import { Hero } from "../static/hero"
 import { LiveStream } from "../static/live-stream"
 import MusicShowCarousel from "./music-show-carousel"
 import { MusicMadness } from "../music/music-madness"
-import { EventsCarousel } from "./events-carousel"
 
 export default function FloatingCarousel() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
