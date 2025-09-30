@@ -39,17 +39,17 @@ export function Hero({ onMenuClick }: HeroProps) {
     }
   };
 
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-    }
-  };
+  // const handleTimeUpdate = () => {
+  //   if (audioRef.current) {
+  //     setCurrentTime(audioRef.current.currentTime);
+  //   }
+  // };
 
-  const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
-    }
-  };
+  // const handleLoadedMetadata = () => {
+  //   if (audioRef.current) {
+  //     setDuration(audioRef.current.duration);
+  //   }
+  // };
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (audioRef.current) {
@@ -215,12 +215,12 @@ export function Hero({ onMenuClick }: HeroProps) {
       </div>
 
       {/* Hidden Audio Element */}
-      <audio
+      {/* <audio
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         src="/placeholder-audio.mp3"
-      />
+      /> */}
     </div>
   );
 }

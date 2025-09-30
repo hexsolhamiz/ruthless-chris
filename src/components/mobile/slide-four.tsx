@@ -1,18 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { Hero } from "@/components/static/hero";
-import { Sidebar } from "@/components/static/sidebar";
+import React from "react";
 import { Footer } from "@/components/static/footer";
 import { ContactForm } from "@/app/static/contact/contact-form";
+import { ContactBanner } from "../banners/contact-bannner";
 
 export const SlideFour = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="min-w-full flex flex-col items-center justify-center">
-      <Hero onMenuClick={() => setIsSidebarOpen(true)} />
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <ContactBanner />
       <ContactForm />
       <Footer />
     </div>

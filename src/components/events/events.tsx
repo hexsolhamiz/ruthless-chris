@@ -7,7 +7,7 @@ import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 
 export const Events = () => {
   return (
-    <div className="w-full bg-black min-h-[500px] flex flex-col justify-start">
+    <div className="z-50 w-full bg-black min-h-[500px] flex flex-col justify-start">
       <div className="w-full max-w-7xl mx-auto flex flex-col lg:items-start items-center py-4">
         <h1 className="text-3xl px-4 text-center lg:text-start font-bold text-white">
           Upcoming Events
@@ -43,7 +43,7 @@ export const Events = () => {
             ))}
           </div>
         </div>
-        <div className="md:hidden">
+        <div className="md:hidden z-50">
         <Carousel
           opts={{
             align: "end",

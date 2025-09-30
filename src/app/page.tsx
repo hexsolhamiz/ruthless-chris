@@ -27,7 +27,7 @@ export default function RuthlessChrisPage() {
         <CtaSection />
         <Footer />
       </div>
-      <div className="md:hidden relative min-h-[90vh] flex flex-col justify-between">
+      <div className="md:hidden relative flex flex-col justify-between">
         <MobileCarousel />
         <BottomNavigation />
       </div>

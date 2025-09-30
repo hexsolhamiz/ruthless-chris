@@ -1,11 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { Home, User, Settings, Star } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Home, User, Settings, Star, Monitor, Music2, Contact, Calendar } from "lucide-react";
 import { SlideOne } from "../mobile/slide-one";
 import { SlideTwo } from "../mobile/slide-two";
 import { SlideThree } from "../mobile/slide-three";
 import { SlideFour } from "../mobile/slide-four";
-import SlideFive from "../mobile/slide-five";
+import { SlideFive } from "../mobile/slide-five";
 // import Image from "next/image";
 
 export default function MobileCarousel() {
@@ -18,7 +18,8 @@ export default function MobileCarousel() {
   const [bgTranslateX, setBgTranslateX] = useState(0);
   const [bgIsDragging, setBgIsDragging] = useState(false);
   const [bgStartX, setBgStartX] = useState(0);
-
+  const [containerHeight, setContainerHeight] = useState<number>(0);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const items = [
     {
       icon: <Home size={28} />,
@@ -28,7 +29,7 @@ export default function MobileCarousel() {
       text: "Home",
     },
     {
-      icon: <User size={28} />,
+      icon: <Monitor size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
       content: <SlideTwo />,
@@ -36,21 +37,21 @@ export default function MobileCarousel() {
     },
 
     {
-      icon: <Settings size={28} />,
+      icon: <Music2 size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
       content: <SlideThree />,
       text: "Videos",
     },
     {
-      icon: <Star size={28} />,
+      icon: <Contact size={28} />,
       color: "bg-yellow-500",
       bgImage: "/slides/slide4.png",
       content: <SlideFour />,
       text: "Contact",
     },
     {
-      icon: <Settings size={28} />,
+      icon: <Calendar size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
       content: <SlideFive />,
@@ -64,7 +65,7 @@ export default function MobileCarousel() {
       text: "Home",
     },
     {
-      icon: <User size={28} />,
+      icon: <Monitor size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
       content: <SlideTwo />,
@@ -72,21 +73,21 @@ export default function MobileCarousel() {
     },
 
     {
-      icon: <Settings size={28} />,
+      icon: <Music2 size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
       content: <SlideThree />,
       text: "Videos",
     },
     {
-      icon: <Star size={28} />,
+      icon: <Contact size={28} />,
       color: "bg-yellow-500",
       bgImage: "/slides/slide4.png",
       content: <SlideFour />,
       text: "Contact",
     },
     {
-      icon: <Settings size={28} />,
+      icon: <Calendar size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
       content: <SlideFive />,
@@ -100,7 +101,7 @@ export default function MobileCarousel() {
       text: "Home",
     },
     {
-      icon: <User size={28} />,
+      icon: <Monitor size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
       content: <SlideTwo />,
@@ -108,38 +109,34 @@ export default function MobileCarousel() {
     },
 
     {
-      icon: <Settings size={28} />,
+      icon: <Music2 size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
       content: <SlideThree />,
       text: "Videos",
     },
     {
-      icon: <Star size={28} />,
+      icon: <Contact size={28} />,
       color: "bg-yellow-500",
       bgImage: "/slides/slide4.png",
       content: <SlideFour />,
       text: "Contact",
     },
     {
-      icon: <Settings size={28} />,
+      icon: <Calendar size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
       content: <SlideFive />,
       text: "Events",
     },
+   
   ];
-
-  //  const extendedItems = [
-  //   items[items.length - 1], // clone last at start
-  //   ...items,
-  //   items[0], // clone first at end
-  // ];
-  // const extendedItems = [items[items.length - 1], ...items, items[0]];
-
-  // const loopedItems = getLoopedItems();
-  const slideWidth = 85; // 64px width + 24px margin
-  // const centerOffset = items.length; // Start from middle set
+  useEffect(() => {
+    if (itemRefs.current[currentIndex]) {
+      setContainerHeight(itemRefs.current[currentIndex]!.offsetHeight);
+    }
+  }, [currentIndex]);
+  const slideWidth = 85;
 
   const handleMouseDown = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
@@ -275,10 +272,10 @@ export default function MobileCarousel() {
   };
 
   return (
-    <div className="w-full min-h-screen max-w-md mx-auto relative">
+    <div className="w-full  max-w-md mx-auto relative">
       {/* Background Image Carousel */}
       <div
-        className="w-full h-full overflow-x-hidden cursor-grab active:cursor-grabbing"
+        className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
         // onMouseDown={handleBgMouseDown}
         // onMouseMove={handleBgMouseMove}
         onMouseUp={handleBgMouseUp}
@@ -287,29 +284,33 @@ export default function MobileCarousel() {
         onTouchMove={handleBgMouseMove}
         onTouchEnd={handleBgMouseUp}
       >
-        {
-          // new line added here
-        }
         <div
-          className="flex w-full min-h-screen overflow-visible transition-transform duration-300 ease-out"
           style={{
-            transform: `translateX(${
-              -currentIndex * 100 + (bgTranslateX / 400) * 100
-            }%)`,
+            height: containerHeight,
+            transition: "height 300ms ease-out",
           }}
+          className="overflow-hidden"
         >
-          {items.map((item, index) => (
-            <div
-              key={index}
-              className="min-w-full min-h-screen bg-cover bg-center relative"
-              // style={{
-              //   backgroundImage: `url(${item.bgImage})`,
-              // }}
-            >
-              <div>{item.content}</div>
-              {/* <div className="absolute inset-0"></div> */}
-            </div>
-          ))}
+          <div
+            className="flex items-start transition-transform duration-300 ease-out"
+            style={{
+              transform: `translateX(${
+                -currentIndex * 100 + (bgTranslateX / 400) * 100
+              }%)`,
+            }}
+          >
+            {items.map((item, index) => (
+              <div
+                key={index}
+                ref={(el) => {
+                  itemRefs.current[index] = el;
+                }}
+                className="min-w-full"
+              >
+                {item.content}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -327,7 +328,7 @@ export default function MobileCarousel() {
           onTouchEnd={handleMouseUp}
         >
           {/* Inner: clips X only */}
-          <div className="fixed inset-4 bg-none flex items-start justify-center overflow-x-hidden">
+          <div className="fixed h-34  inset-4 bg-none flex items-start justify-center overflow-x-hidden">
             {items.map((item, index) => (
               <div
                 key={index}
@@ -344,7 +345,9 @@ export default function MobileCarousel() {
                   //   backgroundSize: "cover",
                   // }}
                 >
-                  <h1 className="text-white font-semibold text-xs">{item.text}</h1>
+                  <h1 className="text-white font-semibold text-xs">
+                    {item.icon}
+                  </h1>
                 </div>
               </div>
             ))}

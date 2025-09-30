@@ -40,13 +40,13 @@ export const ContactForm = () => {
   };
   return (
     <div className="bg-black w-full min-h-[500px] flex flex-col justify-start">
-        <div className="w-full max-w-7xl mx-auto flex flex-col items-center py-4">
-            <h1 className="text-3xl font-bold text-white">Contact Us - Have a song request, shoutout, or feedback?</h1>
-            <p className="text-white">We&apos;d love to hear from you—reach out and let your voice be part of the show!</p>
+        <div className="w-full px-2 lg:px-0 max-w-7xl mx-auto flex flex-col items-center py-4">
+            <h1 className="text-3xl font-bold text-center text-white">Contact Us - Have a song request, shoutout, or feedback?</h1>
+            <p className="text-white text-center">We&apos;d love to hear from you—reach out and let your voice be part of the show!</p>
         </div>
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 max-w-7xl mx-auto w-full"
+        className="space-y-4 max-w-7xl mx-auto w-full px-2 lg:px-0"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
