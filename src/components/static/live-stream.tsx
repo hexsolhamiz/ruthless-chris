@@ -23,11 +23,13 @@ export function LiveStream({
     <div className="py-8 w-full min-h-[600px] flex flex-col justify-center mx-auto bg-black overflow-hidden">
       {/* Header */}
       <div className="w-full max-w-7xl mx-auto flex justify-start px-4 pt-3 pb-1">
-        <h2 className="text-white text-start font-bold text-3xl py-2">{title}</h2>
+        <h2 className="text-white text-start font-bold text-3xl py-2">
+          {title}
+        </h2>
       </div>
 
       {/* Main Content */}
-      <div className="w-full flex flex-col lg:flex-row">
+      <div className="w-full h-full flex flex-col lg:flex-row">
         {/* Video Player */}
         <div className="max-w-7xl mx-auto lg:py-8 h-full w-full relative">
           <div className="flex lg:flex-row flex-col aspect-video bg-black relative">
@@ -39,7 +41,7 @@ export function LiveStream({
             />
 
             <iframe
-              src="https://www.youtube.com/live_chat?v=36YnV9STBqc&si=z59ATHulfbim8waW&embed_domain=localhost"
+              src="https://www.youtube.com/live_chat?v=36YnV9STBqc&embed_domain=localhost&dark_theme=1"
               className="lg:w-[30%] w-full h-full bg-black"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

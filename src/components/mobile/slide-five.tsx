@@ -1,20 +1,20 @@
 "use client";
-
-import React, { useState } from "react";
+import { Events } from "@/components/events/events";
+import { Footer } from "@/components/static/footer";
 import { Hero } from "@/components/static/hero";
 import { Sidebar } from "@/components/static/sidebar";
-import { Footer } from "@/components/static/footer";
-import { ContactForm } from "@/app/static/contact/contact-form";
-
-export const SlideFour = () => {
+import React, { useState } from "react";
+const SlideFive = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-w-full flex flex-col items-center justify-center">
+    <div className="bg-black hidden md:block">
       <Hero onMenuClick={() => setIsSidebarOpen(true)} />
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <ContactForm />
+      <Events />
       <Footer />
     </div>
   );
 };
+
+export default SlideFive;

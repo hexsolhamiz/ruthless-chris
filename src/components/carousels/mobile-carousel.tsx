@@ -5,6 +5,7 @@ import { SlideOne } from "../mobile/slide-one";
 import { SlideTwo } from "../mobile/slide-two";
 import { SlideThree } from "../mobile/slide-three";
 import { SlideFour } from "../mobile/slide-four";
+import SlideFive from "../mobile/slide-five";
 // import Image from "next/image";
 
 export default function MobileCarousel() {
@@ -21,65 +22,111 @@ export default function MobileCarousel() {
   const items = [
     {
       icon: <Home size={28} />,
-      color: "bg-blue-500",      
+      color: "bg-blue-500",
       bgImage: "/slides/slide1.png",
       content: <SlideOne />, // Example content
+      text: "Home",
     },
     {
       icon: <User size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
-      content: <SlideTwo />
+      content: <SlideTwo />,
+      text: "Live",
     },
 
     {
       icon: <Settings size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
-      content: <SlideThree />
-    
+      content: <SlideThree />,
+      text: "Videos",
     },
     {
       icon: <Star size={28} />,
       color: "bg-yellow-500",
       bgImage: "/slides/slide4.png",
-      content: <SlideFour />
+      content: <SlideFour />,
+      text: "Contact",
     },
     {
       icon: <Settings size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
-      content: <SlideThree />
+      content: <SlideFive />,
+      text: "Events",
     },
     {
       icon: <Home size={28} />,
       color: "bg-blue-500",
       bgImage: "/slides/slide1.png",
-      content: <SlideOne />
+      content: <SlideOne />, // Example content
+      text: "Home",
     },
     {
       icon: <User size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
-      content: <SlideTwo />
+      content: <SlideTwo />,
+      text: "Live",
     },
+
     {
       icon: <Settings size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
-      content: <SlideThree />
+      content: <SlideThree />,
+      text: "Videos",
     },
     {
       icon: <Star size={28} />,
       color: "bg-yellow-500",
       bgImage: "/slides/slide4.png",
-      content: <SlideFour />
+      content: <SlideFour />,
+      text: "Contact",
     },
     {
       icon: <Settings size={28} />,
       color: "bg-red-500",
       bgImage: "/slides/slide3.png",
-      content: <SlideThree />
+      content: <SlideFive />,
+      text: "Events",
+    },
+    {
+      icon: <Home size={28} />,
+      color: "bg-blue-500",
+      bgImage: "/slides/slide1.png",
+      content: <SlideOne />, // Example content
+      text: "Home",
+    },
+    {
+      icon: <User size={28} />,
+      color: "bg-green-500",
+      bgImage: "/slides/slide2.png",
+      content: <SlideTwo />,
+      text: "Live",
+    },
+
+    {
+      icon: <Settings size={28} />,
+      color: "bg-red-500",
+      bgImage: "/slides/slide3.png",
+      content: <SlideThree />,
+      text: "Videos",
+    },
+    {
+      icon: <Star size={28} />,
+      color: "bg-yellow-500",
+      bgImage: "/slides/slide4.png",
+      content: <SlideFour />,
+      text: "Contact",
+    },
+    {
+      icon: <Settings size={28} />,
+      color: "bg-red-500",
+      bgImage: "/slides/slide3.png",
+      content: <SlideFive />,
+      text: "Events",
     },
   ];
 
@@ -286,17 +333,19 @@ export default function MobileCarousel() {
                 key={index}
                 className="absolute transition-all duration-300 ease-out"
                 style={getSlideStyle(index)}
-                onClick={() => handleChangeSlide(index)} 
+                onClick={() => handleChangeSlide(index)}
               >
                 <div
-                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1 text-white shadow-md cursor-pointer ${getSlideClass(
+                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1 bg-black text-white shadow-md cursor-pointer ${getSlideClass(
                     index
                   )}`}
-                  style={{
-                    backgroundImage: `url(${item.bgImage})`,
-                    backgroundSize: "cover",
-                  }}
-                />
+                  // style={{
+                  //   backgroundImage: `url(${item.bgImage})`,
+                  //   backgroundSize: "cover",
+                  // }}
+                >
+                  <h1 className="text-white font-semibold text-xs">{item.text}</h1>
+                </div>
               </div>
             ))}
           </div>
