@@ -41,7 +41,7 @@ export function LiveStream({
             />
 
             <iframe
-              src="https://www.youtube.com/live_chat?v=36YnV9STBqc&embed_domain=https://ruthless-chris.vercel.app/t&dark_theme=1"
+              src="https://www.youtube.com/live_chat?v=36YnV9STBqc&embed_domain=ruthless-chris.vercel.app&dark_theme=1"
               className="lg:w-[30%] w-full h-full bg-black"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
