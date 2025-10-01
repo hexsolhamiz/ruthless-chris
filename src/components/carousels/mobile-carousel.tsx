@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Home, User, Settings, Star, Monitor, Music2, Contact, Calendar } from "lucide-react";
+import { Home, Music2, Contact, Calendar, Radio } from "lucide-react";
 import { SlideOne } from "../mobile/slide-one";
 import { SlideTwo } from "../mobile/slide-two";
 import { SlideThree } from "../mobile/slide-three";
@@ -29,7 +29,7 @@ export default function MobileCarousel() {
       text: "Home",
     },
     {
-      icon: <Monitor size={28} />,
+      icon: <Radio size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
       content: <SlideTwo />,
@@ -65,7 +65,7 @@ export default function MobileCarousel() {
       text: "Home",
     },
     {
-      icon: <Monitor size={28} />,
+      icon: <Radio size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
       content: <SlideTwo />,
@@ -101,7 +101,7 @@ export default function MobileCarousel() {
       text: "Home",
     },
     {
-      icon: <Monitor size={28} />,
+      icon: <Radio size={28} />,
       color: "bg-green-500",
       bgImage: "/slides/slide2.png",
       content: <SlideTwo />,
