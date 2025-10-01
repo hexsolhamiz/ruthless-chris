@@ -140,7 +140,7 @@ export function Hero({ onMenuClick }: HeroProps) {
       </nav>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-[450px] lg:min-h-[500px] px-6">
+      <div className="relative z-10 pt-24 lg:pt-0 flex flex-col items-center justify-center h-[450px] lg:min-h-[500px] px-6">
         {/* Animated Wave Graphics */}
         <Image
           src="/logo.png"
