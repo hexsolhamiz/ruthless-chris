@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { Home, Music2, Contact, Calendar, Radio } from "lucide-react";
+import { Home, Music2, Contact, Calendar, Radio, Croissant } from "lucide-react";
 import { SlideOne } from "../mobile/slide-one";
 import { SlideTwo } from "../mobile/slide-two";
 import { SlideThree } from "../mobile/slide-three";
 import { SlideFour } from "../mobile/slide-four";
 import { SlideFive } from "../mobile/slide-five";
+import { SlideSix } from "../mobile/slide-six";
 // import Image from "next/image";
 
 export default function MobileCarousel() {
@@ -58,10 +59,17 @@ export default function MobileCarousel() {
       text: "Events",
     },
     {
+      icon: <Croissant size={28} />,
+      color: "bg-blue-500",
+      bgImage: "/slides/slide1.png",
+      content: <SlideSix />,
+      text: "Bookings",
+    },
+    {
       icon: <Home size={28} />,
       color: "bg-blue-500",
       bgImage: "/slides/slide1.png",
-      content: <SlideOne />, // Example content
+      content: <SlideOne />,
       text: "Home",
     },
     {
@@ -92,6 +100,13 @@ export default function MobileCarousel() {
       bgImage: "/slides/slide3.png",
       content: <SlideFive />,
       text: "Events",
+    },
+    {
+      icon: <Croissant size={28} />,
+      color: "bg-blue-500",
+      bgImage: "/slides/slide1.png",
+      content: <SlideSix />,
+      text: "Bookings",
     },
     {
       icon: <Home size={28} />,

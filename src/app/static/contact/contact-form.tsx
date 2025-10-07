@@ -38,6 +38,7 @@ export const ContactForm = () => {
     setFormData({ name: "", phone: "", email: "", subject: "", message: "" });
     setFile(null);
   };
+  
   return (
     <div className="bg-black w-full min-h-[500px] flex flex-col justify-start">
         <div className="w-full px-2 lg:px-0 max-w-7xl mx-auto flex flex-col items-center py-4">
@@ -103,7 +104,7 @@ export const ContactForm = () => {
           </div>
           <div>
             <Input
-              type="number"
+              type="tel"
               name="phone"
               placeholder="Phone"
               value={formData.phone}

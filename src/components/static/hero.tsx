@@ -152,7 +152,7 @@ export function Hero({ onMenuClick }: HeroProps) {
       </div>
 
       {/* Audio Player Controls */}
-      <div className=" z-30  p-6">
+      <div className="hidden lg:block z-30  p-6">
         <div className="flex items-center space-x-4">
           {/* Play/Pause Button */}
           <Button
