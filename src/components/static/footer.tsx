@@ -56,8 +56,8 @@ export function Footer() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
               <div className="space-y-2">
-                <p className="text-gray-300">📞 xxxx xxxx xx</p>
-                <p className="text-gray-300">✉️ xxxx@xxx@gmail.com</p>
+                <p className="text-gray-300 flex  gap-2 items-center"><Image src="/icons/call.png" width={15} height={15} alt="" /> xxxx xxxx xx</p>
+                <p className="text-gray-300 flex  gap-2 items-center"><Image src="/icons/message.png" width={15} height={15} alt="" /> xxxx@xxx@gmail.com</p>
               </div>
             </div>
 

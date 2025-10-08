@@ -34,10 +34,10 @@ export default function Media() {
         <h1 className="text-3xl font-bold text-white mb-8">
             Social Media Links
         </h1>
-        <div className="flex lg:flex-row flex-col justify-center items-center  max-w-7xl w-full mx-auto">
+        <div className="flex justify-center items-center  max-w-7xl w-full mx-auto">
             {
                 sponsers.map((sponser) => (
-                    <div key={sponser.id} className="p-4">
+                    <div key={sponser.id} className="pt-2 lg:px-2 px-4">
                         <Image src={sponser.imageUrl} alt={sponser.name} width={200} height={200} className="lg:h-24 h-12 object-contain" />
                     </div>
                 ))
