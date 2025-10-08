@@ -30,15 +30,15 @@ export default function Media() {
   ];
 
   return (
-    <div className="min-h-[300px] bg-black  w-full mx-auto flex flex-col items-center justify-center">
+    <div className="min-h-[300px] lg:py-0 py-8 bg-black  w-full mx-auto flex flex-col items-center justify-center">
         <h1 className="text-3xl font-bold text-white mb-8">
             Social Media Links
         </h1>
-        <div className="flex lg:flex-row flex-col justify-center max-w-7xl w-full mx-auto">
+        <div className="flex lg:flex-row flex-col justify-center items-center  max-w-7xl w-full mx-auto">
             {
                 sponsers.map((sponser) => (
                     <div key={sponser.id} className="p-4">
-                        <Image src={sponser.imageUrl} alt={sponser.name} width={200} height={200} className="h-24  object-contain" />
+                        <Image src={sponser.imageUrl} alt={sponser.name} width={200} height={200} className="lg:h-24 h-12 object-contain" />
                     </div>
                 ))
             }

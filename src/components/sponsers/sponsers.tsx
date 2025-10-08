@@ -34,7 +34,7 @@ export default function Sponsers() {
         <h1 className="text-3xl font-bold text-white mb-8">
             Sponsered By 
         </h1>
-        <div className="flex lg:flex-row flex-col justify-center max-w-7xl w-full mx-auto">
+        <div className="flex lg:flex-row flex-col justify-center items-center max-w-7xl w-full mx-auto">
             {
                 sponsers.map((sponser) => (
                     <div key={sponser.id} className="p-4">
