@@ -28,8 +28,8 @@ function StreamingPill({ label }: { label: string }) {
 
 export default function ScheduleTable() {
   return (
-    <section aria-labelledby="schedule-title" className="w-full bg-blue-900">
-      <div className="bg-blue-900 rounded-lg border text-card-foreground shadow-sm">
+    <section aria-labelledby="schedule-title" className="w-full bg-black">
+      <div className="bg-white/10 rounded-lg border text-card-foreground shadow-sm">
         <div className="p-4 md:p-6">
           <h2 id="schedule-title" className="text-center text-white text-xl font-semibold md:text-2xl">
             Show Schedule
