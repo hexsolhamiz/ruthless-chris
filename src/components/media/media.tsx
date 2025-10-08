@@ -27,6 +27,11 @@ export default function Media() {
       name: "Sponser 5",
       imageUrl: "/icons/sound.png",
     },
+    {
+      id: 6,
+      name: "Sponser 6",
+      imageUrl: "/icons/jr.png",
+    },
   ];
 
   return (

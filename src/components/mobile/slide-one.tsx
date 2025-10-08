@@ -6,7 +6,6 @@ import { Footer } from "../static/footer";
 import { MusicMadness } from "../music/music-madness";
 // import { LiveStream } from "../static/live-stream";
 import { CtaSection } from "../static/cta-section";
-import Media from "../media/media";
 import Sponsers from "../sponsers/sponsers";
 
 export const SlideOne = () => {
@@ -18,7 +17,6 @@ export const SlideOne = () => {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <MusicMadness />
       {/* <LiveStream videoUrl="https://www.youtube.com/embed/36YnV9STBqc?si=z59ATHulfbim8waW" /> */}
-      <Media />
       <Sponsers />
       <CtaSection />
       <Footer />

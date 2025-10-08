@@ -86,7 +86,7 @@ export function BottomNavigation() {
   }
 
   return (
-    <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-white border-t border-border z-50">
+    <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-white/10 border-t border-border z-50">
       <div className="px-4 py-3 border-b border-border">
         <audio ref={audioRef} src="/placeholder.mp3" preload="metadata" />
 
@@ -96,26 +96,26 @@ export function BottomNavigation() {
             onClick={togglePlay}
             className="flex items-center justify-center h-8 w-8 rounded-full transition-colors"
           >
-            {isPlaying ? <Pause className="h-4 w-4 text-blue-950" /> : <Play className="h-4 w-4 ml-0.5" />}
+            {isPlaying ? <Pause className="h-4 w-4 text-white" /> : <Play className="text-white h-4 w-4 ml-0.5" />}
           </button>
 
           {/* Progress Bar */}
           <div className="flex-1 flex items-center gap-2">
-            <span className="text-xs text-muted-foreground min-w-[35px]">{formatTime(currentTime)}</span>
+            <span className="text-xs text-white min-w-[35px]">{formatTime(currentTime)}</span>
             <input
               type="range"
               min="0"
               max={duration || 0}
               value={currentTime}
               onChange={handleProgressChange}
-              className="flex-1 h-1  rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0"
+              className="flex-1 h-1 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0"
             />
-            <span className="text-xs text-muted-foreground min-w-[35px]">{formatTime(duration)}</span>
+            <span className="text-xs text-white min-w-[35px]">{formatTime(duration)}</span>
           </div>
 
           {/* Volume Control */}
           <div className="flex items-center gap-2">
-            <button onClick={toggleMute} className="text-muted-foreground hover:text-foreground transition-colors">
+            <button onClick={toggleMute} className="text-white transition-colors">
               {isMuted || volume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
             </button>
             <input
@@ -134,16 +134,13 @@ export function BottomNavigation() {
       <div className="flex items-center justify-around px-2 py-2">
         {navigationItems.map((item) => {
           const Icon = item.icon
-          const isActive = activeItem === item.id
-
           return (
             <button
               key={item.id}
               onClick={() => setActiveItem(item.id)}
               className={cn(
                 "flex flex-col items-center justify-center min-w-0 flex-1 py-2 px-1 transition-colors",
-                "hover:bg-accent hover:text-accent-foreground rounded-md",
-                isActive ? "text-primary" : "text-muted-foreground",
+                "hover:bg-accent text-white rounded-md",
               )}
             >
               <Icon className="h-5 w-5 mb-1" />

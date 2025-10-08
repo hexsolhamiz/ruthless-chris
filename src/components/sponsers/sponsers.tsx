@@ -23,33 +23,31 @@ export default function Sponsers() {
       imageUrl: "/sponsers/cornerstone.png",
     },
     {
-      id: 6,
+      id: 5,
       name: "Sponser 5",
       imageUrl: "/sponsers/castle.png",
+    },
+    {
+      id: 6,
+      name: "Sponser 5",
+      imageUrl: "/sponsers/jr.png",
     },
   ];
 
   return (
     <div className="min-h-[500px] bg-black  w-full mx-auto flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold text-white mb-8">Sponsered By</h1>
-      <div className="grid grid-cols-2 lg:grid-cols-1 place-content-center place-items-center items-center max-w-7xl w-full mx-auto">
-        {sponsers.map((sponser, index) => (
-          <div
-            key={sponser.id}
-            className={`p-4 ${
-              index === 4 ? "col-span-2 justify-self-center" : ""
-            }`}
-          >
-            <Image
-              src={sponser.imageUrl}
-              alt={sponser.name}
-              width={400}
-              height={400}
-              className="h-32 w-auto object-contain"
-            />
-          </div>
-        ))}
-      </div>
+        <h1 className="text-3xl font-bold text-white mb-8">
+            Sponsered By 
+        </h1>
+        <div className="grid lg:grid-cols-6 grid-cols-3 cols-span-1 justify-self-center place-content-center place-items-center items-center max-w-7xl w-full mx-auto">
+            {
+                sponsers.map((sponser) => (
+                    <div key={sponser.id} className="p-4">
+                        <Image src={sponser.imageUrl} alt={sponser.name} width={400} height={400} className="h-32 w-auto object-contain" />
+                    </div>
+                ))
+            }
+        </div>
     </div>
   );
 }

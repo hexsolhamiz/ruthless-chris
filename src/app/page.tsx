@@ -10,7 +10,6 @@ import { Footer } from "@/components/static/footer";
 import MobileCarousel from "@/components/carousels/mobile-carousel";
 import { CtaSection } from "@/components/static/cta-section";
 import Sponsers from "@/components/sponsers/sponsers";
-import Media from "@/components/media/media";
 
 export default function RuthlessChrisPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -26,9 +25,9 @@ export default function RuthlessChrisPage() {
         <MusicMadness />
         {/* <MusicShowCarousel  /> */}
         <LiveStream videoUrl="https://www.youtube.com/embed/36YnV9STBqc?si=z59ATHulfbim8waW" />
-        <CtaSection />
-        <Media />
         <Sponsers />
+        <CtaSection />
+
         <Footer />
       </div>
       <div className="md:hidden relative flex flex-col justify-between">
