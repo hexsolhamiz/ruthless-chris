@@ -121,7 +121,7 @@ export function Footer() {
                     key={sponser.id}
                     href={sponser.link || "#"}
                     target="_blank"
-                    className="w-8 h-8 bg-red-600 rounded flex items-center justify-center hover:bg-red-700 transition-colors"
+                    className="w-8 h-8 rounded flex items-center justify-center hover:bg-red-700 transition-colors"
                   >
                     <Image
                       alt="tiktok"
