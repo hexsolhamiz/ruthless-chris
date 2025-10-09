@@ -257,7 +257,7 @@ export default function MobileCarousel() {
     // Active icon (center)
     if (distance === 0) {
       return {
-        transform: `translateX(${baseTranslateX}px) translateY(15px) scale(1.25)`,
+        transform: `translateZ(0) translateX(${baseTranslateX}px) translateY(15px) scale(1.25)`,
         zIndex: 20,
         opacity: 1,
         filter: "drop-shadow(0px 8px 24px rgba(0,0,0,0.45))",
@@ -307,7 +307,7 @@ export default function MobileCarousel() {
           <div
             className="flex items-start transition-transform duration-300 ease-out"
             style={{
-              transform: `translateX(${
+              transform: `translateZ(0) translateX(${
                 -currentIndex * 100 + (bgTranslateX / 400) * 100
               }%)`,
             }}
