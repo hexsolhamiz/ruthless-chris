@@ -86,7 +86,7 @@ export function BottomNavigation() {
   }
 
   return (
-    <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-blue-950/80 backdrop-blur-2xl z-50">
+    <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-blue-950/30 backdrop-blur-2xl z-50">
       <div className="px-4 py-3">
         <audio ref={audioRef} src="/placeholder.mp3" preload="metadata" />
 
