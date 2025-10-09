@@ -12,7 +12,6 @@ import { SlideSix } from "../mobile/slide-six";
 export default function MobileCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
@@ -112,7 +111,7 @@ export default function MobileCarousel() {
       icon: <Home size={28} />,
       color: "bg-blue-500",
       bgImage: "/slides/slide1.png",
-      content: <SlideOne />, // Example content
+      content: <SlideOne />,
       text: "Home",
     },
     {
@@ -185,7 +184,7 @@ export default function MobileCarousel() {
     if (nextIndex !== currentIndex) {
       handleChangeSlide(nextIndex); // 👈 use new handler
     }
-    setIsTransitioning(true);
+    // setIsTransitioning(true);
     setIsDragging(false);
     setTranslateX(0);
     setStartX(0);
@@ -224,7 +223,7 @@ export default function MobileCarousel() {
     if (nextIndex !== currentIndex) {
       handleChangeSlide(nextIndex); // 👈 use new handler
     }
-    setIsTransitioning(true);
+    // setIsTransitioning(true);
     setBgIsDragging(false);
     setBgTranslateX(0);
     setBgStartX(0);
