@@ -290,9 +290,7 @@ export default function MobileCarousel() {
     <div className="w-full  max-w-md mx-auto relative">
       {/* Background Image Carousel */}
       <div
-        className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
-        // onMouseDown={handleBgMouseDown}
-        // onMouseMove={handleBgMouseMove}
+        className="w-full overflow-hidden cursor-grab active:cursor-grabbing bg-black"
         onMouseUp={handleBgMouseUp}
         onMouseLeave={handleBgMouseUp}
         onTouchStart={handleBgMouseDown}
@@ -335,8 +333,6 @@ export default function MobileCarousel() {
         <div
           className="relative z-20 overflow-y-visible cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
-          // onMouseMove={handleMouseMove}
-          // onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onTouchStart={handleMouseDown}
           onTouchMove={handleMouseMove}
@@ -355,10 +351,6 @@ export default function MobileCarousel() {
                   className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1 bg-black text-white shadow-md cursor-pointer ${getSlideClass(
                     index
                   )}`}
-                  // style={{
-                  //   backgroundImage: `url(${item.bgImage})`,
-                  //   backgroundSize: "cover",
-                  // }}
                 >
                   <h1 className="text-white font-semibold text-xs">
                     {item.icon}

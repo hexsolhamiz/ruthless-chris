@@ -30,7 +30,7 @@ export default function RuthlessChrisPage() {
 
         <Footer />
       </div>
-      <div className="md:hidden relative flex flex-col justify-between">
+      <div className="md:hidden bg-black relative flex flex-col justify-between">
         <MobileCarousel />
         <BottomNavigation />
       </div>
