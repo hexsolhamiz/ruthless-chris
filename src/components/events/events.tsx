@@ -3,7 +3,13 @@
 import { events } from "@/data/events";
 import Image from "next/image";
 import React from "react";
-import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
 
 export const Events = () => {
   return (
@@ -43,32 +49,32 @@ export const Events = () => {
             ))}
           </div>
         </div>
-        <div className="md:hidden z-50">
-        <Carousel
-          opts={{
-            align: "end",
-          }}
-          orientation="vertical"
-          className="w-full mt-12 max-w-xs"
-        >
-          <h1 className="text-white text-lg font-light text-center">
-            Swipe up to see more
-          </h1>
-          <CarouselContent className="mt-4 h-[400px]">
-            {events.map((event, index) => (
-              <CarouselItem key={index} className="pt-1 md:basis-1/2">
-                <Image
-                  key={index}
-                  src={event.img}
-                  alt={event.img}
-                  width={400}
-                  height={160}
-                  className="w-full h-[260px]  rounded-2xl mb-4"
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
+        <div className="md:hidden z-50 px-4">
+          <Carousel
+            opts={{
+              align: "end",
+            }}
+            orientation="horizontal"
+            className="w-full mt-12 max-w-xs"
+          >
+          
+            <CarouselContent className="mt-4 h-[400px]">
+              {events.map((event, index) => (
+                <CarouselItem key={index} className="pt-1 md:basis-1/2">
+                  <Image
+                    key={index}
+                    src={event.img}
+                    alt={event.img}
+                    width={400}
+                    height={160}
+                    className="w-full h-[260px]  rounded-2xl mb-4"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
         </div>
       </div>
     </div>
