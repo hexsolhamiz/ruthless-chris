@@ -3,9 +3,9 @@ import React from "react";
 
 import { Footer } from "../static/footer";
 import { MusicMadness } from "../music/music-madness";
-import { CtaSection } from "../static/cta-section";
 import Sponsers from "../sponsers/sponsers";
 import { HomeBanner } from "../banners/home-banner";
+import MobileCta from "../static/mobile-cta";
 
 export const SlideOne = () => {
   return (
@@ -13,7 +13,7 @@ export const SlideOne = () => {
       <HomeBanner />
       <MusicMadness />
       <Sponsers />
-      <CtaSection />
+      <MobileCta />
       <Footer />
     </div>
   );

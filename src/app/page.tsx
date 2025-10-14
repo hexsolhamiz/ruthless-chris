@@ -16,7 +16,7 @@ export default function RuthlessChrisPage() {
 
   return (
     <>
-      <div className="hidden md:block ">
+      <div className="hidden md:block bg-black">
         <Hero onMenuClick={() => setIsSidebarOpen(true)} />
         <Sidebar
           isOpen={isSidebarOpen}

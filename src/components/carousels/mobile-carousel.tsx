@@ -195,7 +195,7 @@ export default function MobileCarousel() {
       </div>
 
       {/* Icon Carousel */}
-      <div className="fixed inset-x-0 top-0 z-10 pointer-events-none">
+      <div className="bg-black fixed inset-x-0 top-0 z-10 pointer-events-none">
         {/* Outer: allows Y overflow (for shadows above/below) */}
         <div
           className="relative z-20 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"

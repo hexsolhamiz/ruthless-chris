@@ -3,8 +3,8 @@ import { Button } from "../ui/button";
 
 const MobileCta = () => {
   return (
-    <div>
-      <div className="hidden md:block">
+    <div className="bg-black h-[400px] flex items-center">
+      <div className="">
         <h2 className="text-white text-center font-bold text-3xl mb-2">
           Have a song request, shoutout, or feedback?
         </h2>
