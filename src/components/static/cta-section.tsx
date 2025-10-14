@@ -5,10 +5,10 @@ export const CtaSection = () => {
   return (
     <div className="w-full py-8 bg-black ">
       <div
-        className="w-full max-w-7xl mx-auto  h-[350px] bg-center bg-cover rounded-2xl flex items-start justify-center py-4"
+        className="w-full max-w-7xl mx-auto lg:h-[350px] h-[200px] bg-center bg-cover rounded-2xl flex items-start justify-center py-4"
         style={{ backgroundImage: "url('/cta-bg.png')" }}
       >
-        <div>
+        <div className="hidden md:block">
           <h2 className="text-white text-center font-bold text-3xl mb-2">
             Have a song request, shoutout, or feedback?
           </h2>
