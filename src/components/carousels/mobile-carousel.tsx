@@ -157,7 +157,7 @@ export default function MobileCarousel() {
     <div className="w-full  max-w-md mx-auto relative">
       {/* Background Image Carousel */}
       <div
-        className="w-full overflow-hidden cursor-grab active:cursor-grabbing bg-black"
+        className="relative z-10 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
         onMouseUp={handleBgMouseUp}
         onMouseLeave={handleBgMouseUp}
         onTouchStart={handleBgMouseDown}
@@ -195,10 +195,10 @@ export default function MobileCarousel() {
       </div>
 
       {/* Icon Carousel */}
-      <div className="relative z-10">
+      <div className="fixed inset-x-0 top-0 z-10 pointer-events-none">
         {/* Outer: allows Y overflow (for shadows above/below) */}
         <div
-          className="relative z-20 overflow-y-visible cursor-grab active:cursor-grabbing select-none"
+          className="relative z-20 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
           onMouseDown={handleMouseDown}
           onMouseLeave={handleMouseUp}
           onTouchStart={handleMouseDown}
