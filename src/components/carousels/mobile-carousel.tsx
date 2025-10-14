@@ -1,13 +1,7 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
-import { Home, Music2, Contact, Calendar, Radio, Croissant } from "lucide-react";
-import { SlideOne } from "../mobile/slide-one";
-import { SlideTwo } from "../mobile/slide-two";
-import { SlideThree } from "../mobile/slide-three";
-import { SlideFour } from "../mobile/slide-four";
-import { SlideFive } from "../mobile/slide-five";
-import { SlideSix } from "../mobile/slide-six";
-// import Image from "next/image";
+import { items } from "@/data/slides";
 
 export default function MobileCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -20,131 +14,7 @@ export default function MobileCarousel() {
   const [bgStartX, setBgStartX] = useState(0);
   const [containerHeight, setContainerHeight] = useState<number>(0);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const items = [
-    {
-      icon: <Home size={28} />,
-      color: "bg-blue-500",
-      bgImage: "/slides/slide1.png",
-      content: <SlideOne />, // Example content
-      text: "Home",
-    },
-    {
-      icon: <Radio size={28} />,
-      color: "bg-green-500",
-      bgImage: "/slides/slide2.png",
-      content: <SlideTwo />,
-      text: "Live",
-    },
-
-    {
-      icon: <Music2 size={28} />,
-      color: "bg-red-500",
-      bgImage: "/slides/slide3.png",
-      content: <SlideThree />,
-      text: "Videos",
-    },
-    {
-      icon: <Contact size={28} />,
-      color: "bg-yellow-500",
-      bgImage: "/slides/slide4.png",
-      content: <SlideFour />,
-      text: "Contact",
-    },
-    {
-      icon: <Calendar size={28} />,
-      color: "bg-red-500",
-      bgImage: "/slides/slide3.png",
-      content: <SlideFive />,
-      text: "Events",
-    },
-    {
-      icon: <Croissant size={28} />,
-      color: "bg-blue-500",
-      bgImage: "/slides/slide1.png",
-      content: <SlideSix />,
-      text: "Bookings",
-    },
-    {
-      icon: <Home size={28} />,
-      color: "bg-blue-500",
-      bgImage: "/slides/slide1.png",
-      content: <SlideOne />,
-      text: "Home",
-    },
-    {
-      icon: <Radio size={28} />,
-      color: "bg-green-500",
-      bgImage: "/slides/slide2.png",
-      content: <SlideTwo />,
-      text: "Live",
-    },
-
-    {
-      icon: <Music2 size={28} />,
-      color: "bg-red-500",
-      bgImage: "/slides/slide3.png",
-      content: <SlideThree />,
-      text: "Videos",
-    },
-    {
-      icon: <Contact size={28} />,
-      color: "bg-yellow-500",
-      bgImage: "/slides/slide4.png",
-      content: <SlideFour />,
-      text: "Contact",
-    },
-    {
-      icon: <Calendar size={28} />,
-      color: "bg-red-500",
-      bgImage: "/slides/slide3.png",
-      content: <SlideFive />,
-      text: "Events",
-    },
-    {
-      icon: <Croissant size={28} />,
-      color: "bg-blue-500",
-      bgImage: "/slides/slide1.png",
-      content: <SlideSix />,
-      text: "Bookings",
-    },
-    {
-      icon: <Home size={28} />,
-      color: "bg-blue-500",
-      bgImage: "/slides/slide1.png",
-      content: <SlideOne />,
-      text: "Home",
-    },
-    {
-      icon: <Radio size={28} />,
-      color: "bg-green-500",
-      bgImage: "/slides/slide2.png",
-      content: <SlideTwo />,
-      text: "Live",
-    },
-
-    {
-      icon: <Music2 size={28} />,
-      color: "bg-red-500",
-      bgImage: "/slides/slide3.png",
-      content: <SlideThree />,
-      text: "Videos",
-    },
-    {
-      icon: <Contact size={28} />,
-      color: "bg-yellow-500",
-      bgImage: "/slides/slide4.png",
-      content: <SlideFour />,
-      text: "Contact",
-    },
-    {
-      icon: <Calendar size={28} />,
-      color: "bg-red-500",
-      bgImage: "/slides/slide3.png",
-      content: <SlideFive />,
-      text: "Events",
-    },
-   
-  ];
+ 
   useEffect(() => {
     if (itemRefs.current[currentIndex]) {
       setContainerHeight(itemRefs.current[currentIndex]!.offsetHeight);
@@ -182,9 +52,8 @@ export default function MobileCarousel() {
     }
 
     if (nextIndex !== currentIndex) {
-      handleChangeSlide(nextIndex); // 👈 use new handler
+      handleChangeSlide(nextIndex);
     }
-    // setIsTransitioning(true);
     setIsDragging(false);
     setTranslateX(0);
     setStartX(0);
@@ -221,9 +90,8 @@ export default function MobileCarousel() {
     }
 
     if (nextIndex !== currentIndex) {
-      handleChangeSlide(nextIndex); // 👈 use new handler
+      handleChangeSlide(nextIndex);
     }
-    // setIsTransitioning(true);
     setBgIsDragging(false);
     setBgTranslateX(0);
     setBgStartX(0);
