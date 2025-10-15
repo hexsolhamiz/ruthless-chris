@@ -147,7 +147,7 @@ export function Hero({ onMenuClick }: HeroProps) {
           width={400}
           height={400}
           alt="Logo"
-          className="lg:h-[400px] lg:w-[400px] h-[200px] w-[200px] animate-pulse"
+          className="lg:h-[400px] lg:w-[400px] h-[200px] w-[200px] animation-pulse"
         />
       </div>
 

@@ -1,6 +1,7 @@
 import React from "react";
-import { Home, Radio, Music2, Contact, Calendar, Croissant } from "lucide-react";
+import { Home, Radio, Music2, Contact, Calendar, Croissant, NotebookTabs } from "lucide-react";
 import { SlideOne, SlideTwo, SlideThree, SlideFour, SlideFive, SlideSix } from "../components/mobile/index";
+import { SlideSeven } from "@/components/mobile/slide-seven";
 
 export const items = [
     {
@@ -47,10 +48,17 @@ export const items = [
       text: "Bookings",
     },
     {
+      icon: React.createElement(NotebookTabs, { size: 28 }),
+      color: "bg-blue-500",
+      bgImage: "/slides/slide1.png",
+      content: React.createElement(SlideSeven),
+      text: "Home",
+    },
+    {
       icon: React.createElement(Home, { size: 28 }),
       color: "bg-blue-500",
       bgImage: "/slides/slide1.png",
-      content: React.createElement(SlideOne),
+      content: React.createElement(SlideOne), // Example content
       text: "Home",
     },
     {
@@ -88,6 +96,13 @@ export const items = [
       bgImage: "/slides/slide1.png",
       content: React.createElement(SlideSix),
       text: "Bookings",
+    },
+    {
+      icon: React.createElement(NotebookTabs, { size: 28 }),
+      color: "bg-blue-500",
+      bgImage: "/slides/slide1.png",
+      content: React.createElement(SlideSeven),
+      text: "Home",
     },
     {
       icon: React.createElement(Home, { size: 28 }),

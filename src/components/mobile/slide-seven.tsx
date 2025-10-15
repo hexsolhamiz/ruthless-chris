@@ -2,15 +2,15 @@
 
 import React from "react";
 import { Footer } from "@/components/static/footer";
-import { ContactForm } from "@/components/static/contact/contact-form";
-import { HomeBanner } from "../banners/home-banner";
+import {BookingForm} from "@/components/static/booking/booking-form";
+import { ContactBanner } from "../banners/contact-bannner";
 
-export const SlideFour = () => {
+export const SlideSeven = () => {
 
   return (
     <div className="min-w-full flex flex-col items-center justify-center">
-      <HomeBanner />
-      <ContactForm />
+      <ContactBanner/>
+      <BookingForm />
       <Footer />
     </div>
   );
