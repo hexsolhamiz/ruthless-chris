@@ -20,6 +20,7 @@ export default function MobileCarousel() {
       setContainerHeight(itemRefs.current[currentIndex]!.offsetHeight);
     }
   }, [currentIndex]);
+  
   const slideWidth = 85;
 
   const handleMouseDown = (
@@ -154,7 +155,7 @@ export default function MobileCarousel() {
   };
 
   return (
-    <div className="w-full  max-w-md mx-auto relative">
+    <div className="w-full max-w-md mx-auto relative">
       {/* Background Image Carousel */}
       <div
         className="relative z-10 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
@@ -226,8 +227,10 @@ export default function MobileCarousel() {
               </div>
             ))}
           </div>
+
         </div>
       </div>
+
     </div>
   );
 }

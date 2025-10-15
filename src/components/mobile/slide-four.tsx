@@ -3,13 +3,13 @@
 import React from "react";
 import { Footer } from "@/components/static/footer";
 import { ContactForm } from "@/app/static/contact/contact-form";
-import { ContactBanner } from "../banners/contact-bannner";
+import { HomeBanner } from "../banners/home-banner";
 
 export const SlideFour = () => {
 
   return (
     <div className="min-w-full flex flex-col items-center justify-center">
-      <ContactBanner />
+      <HomeBanner />
       <ContactForm />
       <Footer />
     </div>
