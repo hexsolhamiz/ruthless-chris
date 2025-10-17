@@ -56,10 +56,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <span>Contact</span>
               </div>
             </Link>
-            <Link href="/contact">
+            <Link href="/book">
               <div className="flex items-center space-x-3 p-3 rounded-lg hover:cursor-pointer hover:bg-white/10 cursor-pointer">
                 <Mail className="w-5 h-5" />
-                <span>Email</span>
+                <span>Book</span>
               </div>
             </Link>
             
