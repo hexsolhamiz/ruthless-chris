@@ -41,7 +41,7 @@ export const BookingForm = () => {
     <div className="bg-black w-full min-h-[500px] flex flex-col justify-start">
       <div className="w-full px-2 lg:px-0 max-w-7xl mx-auto flex flex-col items-center py-4">
         <h1 className="text-3xl font-bold text-center text-white">
-          Book a Session
+          Bookings
         </h1>
         <p className="text-white text-center">
           Schedule your session — we’ll confirm your booking as soon as
