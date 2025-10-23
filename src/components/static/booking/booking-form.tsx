@@ -10,7 +10,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { BookingTermsAndConditions } from "./booking-terms-and-conditions";
 
 export const BookingForm = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +18,7 @@ export const BookingForm = () => {
     email: "",
     phone: "",
     message: "",
+    termsAccepted: false,
   });
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [file, setFile] = useState<File | null>(null);
@@ -32,7 +33,6 @@ export const BookingForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ ...formData, date, file });
-    setFormData({ name: "", phone: "", email: "", message: "" });
     setDate(undefined);
     setFile(null);
   };
@@ -40,18 +40,19 @@ export const BookingForm = () => {
   return (
     <div className="bg-black w-full min-h-[500px] flex flex-col justify-start">
       <div className="w-full px-2 lg:px-0 max-w-7xl mx-auto flex flex-col items-center py-4">
-        <h1 className="text-3xl font-bold text-center text-white">
-          Bookings
-        </h1>
+        <h1 className="text-3xl font-bold text-center text-white">Bookings</h1>
         <p className="text-white text-center">
-          Schedule your session — we’ll confirm your booking as soon as
-          possible.
+          £150 Booking Fee Non Refundable,
         </p>
+        {/* <p className="text-white text-center">
+          Schedule your session — we&apos;ll confirm your booking as soon as
+          possible.
+        </p> */}
       </div>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 max-w-7xl mx-auto w-full px-2 lg:px-0"
+        className="space-y-4 max-w-7xl mx-auto w-full px-2 lg:px-0 pb-8"
       >
         {/* Name + Email */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -91,7 +92,6 @@ export const BookingForm = () => {
                 variant="outline"
                 className="w-full justify-start text-left font-light bg-transparent border border-white text-white rounded-full px-6 py-6 hover:bg-white/10"
               >
-                <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />
                 {date ? (
                   format(date, "PPP")
                 ) : (
@@ -104,7 +104,6 @@ export const BookingForm = () => {
                 mode="single"
                 selected={date}
                 onSelect={setDate}
-                initialFocus
               />
             </PopoverContent>
           </Popover>
@@ -119,10 +118,35 @@ export const BookingForm = () => {
           className="bg-transparent border font-light placeholder:font-light border-white rounded-3xl px-6 py-4 min-h-[150px] text-white placeholder:text-white focus:border-primary focus:ring-primary"
         />
 
+        {/* Terms and Conditions */}
+        <div className="border border-white/30 rounded-3xl p-6 mt-6">
+          <BookingTermsAndConditions />
+
+          {/* Checkbox */}
+          <div className="flex items-start gap-3 mt-6 pt-4 border-t border-white/20">
+            <input
+              type="checkbox"
+              id="terms"
+              name="termsAccepted"
+              checked={formData.termsAccepted}
+              onChange={handleChange}
+              className="mt-1 h-5 w-5 rounded border-white/30 bg-transparent text-emerald-500 focus:ring-emerald-500 focus:ring-offset-black cursor-pointer"
+              required
+            />
+            <label
+              htmlFor="terms"
+              className="text-white font-light text-sm cursor-pointer"
+            >
+              I have read and agree to the terms and conditions outlined above
+            </label>
+          </div>
+        </div>
+
         {/* Submit */}
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-emerald-500 to-pink-500 text-white hover:cursor-pointer rounded-full py-6 font-light"
+          disabled={!formData.termsAccepted}
+          className="w-full bg-gradient-to-r from-emerald-500 to-pink-500 text-white hover:cursor-pointer rounded-full py-6 font-light disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Book Now
         </Button>

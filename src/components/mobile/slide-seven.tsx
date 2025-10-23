@@ -7,9 +7,7 @@ import { HomeBanner } from "../banners/home-banner";
 
 export const SlideSeven = () => {
 
-  return (
-    // Booking Screen
-    
+  return (    
     <div className="min-w-full flex flex-col items-center justify-center">
       <HomeBanner />
       <BookingForm />
