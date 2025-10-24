@@ -11,6 +11,14 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { BookingTermsAndConditions } from "./booking-terms-and-conditions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { timings } from "@/data/timings";
 
 export const BookingForm = () => {
   const [formData, setFormData] = useState({
@@ -100,15 +108,106 @@ export const BookingForm = () => {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 bg-white text-black rounded-xl shadow-lg">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-              />
+              <Calendar mode="single" selected={date} onSelect={setDate} />
             </PopoverContent>
           </Popover>
         </div>
 
+        <Select
+          onValueChange={(value) =>
+            setFormData((prev) => ({ ...prev, subject: value }))
+          }
+        >
+          <SelectTrigger className="w-full bg-transparewnt border border-white rounded-full px-6 py-6 text-white font-light placeholder:text-white focus:priamry focus:ring-purple-500">
+            <SelectValue
+              placeholder="Hiring Details"
+              className="font-light text-white"
+            />
+          </SelectTrigger>
+          <SelectContent className="  text-black  bg-white border-white">
+            <SelectItem value="events" className="font-light">
+              DJ Only
+            </SelectItem>
+            <SelectItem value="live" className="font-light">
+              DJ + Equipment
+            </SelectItem>
+            <SelectItem value="feedback" className="font-light">
+              Equipment Only
+            </SelectItem>
+          </SelectContent>
+        </Select>
+
+        <h2 className="text-white px-2 text-center">Venue Details</h2>
+
+        <div className="grid  grid-cols-2 gap-2">
+          <div>
+            <Select
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, subject: value }))
+              }
+            >
+              <SelectTrigger className="w-full bg-transparewnt border border-white rounded-full px-6 py-6 text-white font-light placeholder:text-white focus:priamry focus:ring-purple-500">
+                <SelectValue
+                  placeholder="Start Time"
+                  className="font-light text-white"
+                />
+              </SelectTrigger>
+              <SelectContent className="  text-black  bg-white border-white">
+                {timings.map((timing) => (
+                  <SelectItem value={timing} key={timing}>
+                    {timing}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Select
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, subject: value }))
+              }
+            >
+              <SelectTrigger className="w-full bg-transparewnt border border-white rounded-full px-6 py-6 text-white font-light placeholder:text-white focus:priamry focus:ring-purple-500">
+                <SelectValue
+                  placeholder="End Time"
+                  className="font-light text-white"
+                />
+              </SelectTrigger>
+              <SelectContent className="  text-black  bg-white border-white">
+                {timings.map((timing) => (
+                  <SelectItem value={timing} key={timing}>
+                    {timing}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <h2 className="text-white px-2 text-center">Venue Location</h2>
+<Select
+          onValueChange={(value) =>
+            setFormData((prev) => ({ ...prev, subject: value }))
+          }
+        >
+          <SelectTrigger className="w-full bg-transparewnt border border-white rounded-full px-6 py-6 text-white font-light placeholder:text-white focus:priamry focus:ring-purple-500">
+            <SelectValue
+              placeholder="Hiring Details"
+              className="font-light text-white"
+            />
+          </SelectTrigger>
+          <SelectContent className="  text-black  bg-white border-white">
+            <SelectItem value="events" className="font-light">
+              Ground Floor
+            </SelectItem>
+            <SelectItem value="live" className="font-light">
+              Above Ground Floor
+            </SelectItem>
+            <SelectItem value="feedback" className="font-light">
+              Parking Facility
+            </SelectItem>
+          </SelectContent>
+        </Select>
         {/* Message */}
         <Textarea
           name="message"
