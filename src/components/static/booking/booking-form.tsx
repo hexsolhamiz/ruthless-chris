@@ -169,7 +169,7 @@ export const BookingForm = () => {
             >
               <SelectTrigger className="w-full bg-transparewnt border border-white rounded-full px-6 py-6 text-white font-light placeholder:text-white focus:priamry focus:ring-purple-500">
                 <SelectValue
-                  placeholder="End Time"
+                  placeholder="Finish Time"
                   className="font-light text-white"
                 />
               </SelectTrigger>
