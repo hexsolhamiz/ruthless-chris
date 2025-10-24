@@ -126,13 +126,13 @@ export const BookingForm = () => {
           </SelectTrigger>
           <SelectContent className="  text-black  bg-white border-white">
             <SelectItem value="events" className="font-light">
-              DJ Only
+              Hire Dj Only, Hire Dj + Equipment.
             </SelectItem>
             <SelectItem value="live" className="font-light">
-              DJ + Equipment
+              Hire DJ + Equipment
             </SelectItem>
             <SelectItem value="feedback" className="font-light">
-              Equipment Only
+              Hire Equipment Only
             </SelectItem>
           </SelectContent>
         </Select>
@@ -185,14 +185,14 @@ export const BookingForm = () => {
         </div>
 
         <h2 className="text-white px-2 text-center">Venue Location</h2>
-<Select
+        <Select
           onValueChange={(value) =>
             setFormData((prev) => ({ ...prev, subject: value }))
           }
         >
           <SelectTrigger className="w-full bg-transparewnt border border-white rounded-full px-6 py-6 text-white font-light placeholder:text-white focus:priamry focus:ring-purple-500">
             <SelectValue
-              placeholder="Hiring Details"
+              placeholder="Share Venue Details"
               className="font-light text-white"
             />
           </SelectTrigger>
