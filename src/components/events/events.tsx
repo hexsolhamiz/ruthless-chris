@@ -3,13 +3,13 @@
 import { events } from "@/data/events";
 import Image from "next/image";
 import React from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../ui/carousel";
+// import {
+//   Carousel,
+//   CarouselContent,
+//   CarouselItem,
+//   CarouselNext,
+//   CarouselPrevious,
+// } from "../ui/carousel";
 
 export const Events = () => {
   return (
@@ -22,8 +22,8 @@ export const Events = () => {
           Stay tuned for our upcoming events and live shows! Check back often
           for the latest updates and schedules.
         </p>
-        <div className="hidden md:block">
-          <div className="w-full grid grid-cols-4 py-4 px-4 md:grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-6 lg:py-8">
+        <div className="block">
+          <div className="w-full grid md:grid-cols-2 grid-cols-1 lg:grid-cols-4 py-4 px-4 gap-2 lg:gap-6 lg:py-8">
             {events.slice(9, 22).map((event, index) => (
               <Image
                 key={index}
@@ -49,12 +49,12 @@ export const Events = () => {
             ))}
           </div>
         </div>
-        <div className="md:hidden z-50 px-4">
+        {/* <div className="md:hidden z-50 px-4">
           <Carousel
             opts={{
               align: "end",
             }}
-            orientation="horizontal"
+            orientation="vertical"
             className="w-full mt-12 max-w-xs"
           >
           
@@ -72,9 +72,12 @@ export const Events = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
           </Carousel>
+        </div> */}
+
+
+        <div>
+
         </div>
       </div>
     </div>

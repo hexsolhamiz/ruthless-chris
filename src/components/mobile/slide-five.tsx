@@ -6,7 +6,7 @@ import { EventBanner } from "../banners/event-banner";
 export const SlideFive = () => {
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
+    <div className="min-w-full flex flex-col items-center justify-center">
       <EventBanner />
       <Events />
       <Footer />

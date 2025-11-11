@@ -12,17 +12,22 @@ export default function MobileCarousel() {
   const [bgTranslateX, setBgTranslateX] = useState(0);
   const [bgIsDragging, setBgIsDragging] = useState(false);
   const [bgStartX, setBgStartX] = useState(0);
-  const [containerHeight, setContainerHeight] = useState<number>(0);
+
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
- 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // ✅ Reset scroll to top when slide changes
   useEffect(() => {
-    if (itemRefs.current[currentIndex]) {
-      setContainerHeight(itemRefs.current[currentIndex]!.offsetHeight);
+    const currentItem = itemRefs.current[currentIndex];
+    if (currentItem) {
+      // Force scroll to top immediately
+      currentItem.scrollTop = 0;
     }
   }, [currentIndex]);
-  
+
   const slideWidth = 85;
 
+  // --- Icon Carousel Handlers ---
   const handleMouseDown = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
   ) => {
@@ -55,12 +60,13 @@ export default function MobileCarousel() {
     if (nextIndex !== currentIndex) {
       handleChangeSlide(nextIndex);
     }
+
     setIsDragging(false);
     setTranslateX(0);
     setStartX(0);
   };
 
-  // Background carousel handlers
+  // --- Background Carousel Handlers ---
   const handleBgMouseDown = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
   ) => {
@@ -93,16 +99,19 @@ export default function MobileCarousel() {
     if (nextIndex !== currentIndex) {
       handleChangeSlide(nextIndex);
     }
+
     setBgIsDragging(false);
     setBgTranslateX(0);
     setBgStartX(0);
   };
 
+  // --- Change slide + update indices ---
   const handleChangeSlide = (newIndex: number) => {
     setPrevIndex(currentIndex);
     setCurrentIndex(newIndex);
   };
 
+  // --- Style helpers ---
   const getSlideClass = (index: number) => {
     if (index === currentIndex) {
       return "z-20 scale-100 translate-y-1 opacity-100 shadow-xl transition-all duration-300";
@@ -115,14 +124,11 @@ export default function MobileCarousel() {
 
   const getSlideStyle = (index: number) => {
     let distance = index - currentIndex;
-
-    // Wrap for circular effect
     if (distance > items.length / 2) distance -= items.length;
     if (distance < -items.length / 2) distance += items.length;
 
     const baseTranslateX = distance * slideWidth;
 
-    // Active icon (center)
     if (distance === 0) {
       return {
         transform: `translateZ(0) translateX(${baseTranslateX}px) translateY(15px) scale(1.25)`,
@@ -133,7 +139,6 @@ export default function MobileCarousel() {
       };
     }
 
-    // Side icons
     if (Math.abs(distance) === 1) {
       return {
         transform: `translateX(${baseTranslateX}px) translateY(-1px) scale(1)`,
@@ -144,7 +149,6 @@ export default function MobileCarousel() {
       };
     }
 
-    // Far icons
     return {
       transform: `translateX(${baseTranslateX}px) translateY(-3px) scale(0.8)`,
       zIndex: 1,
@@ -155,49 +159,40 @@ export default function MobileCarousel() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto relative">
-      {/* Background Image Carousel */}
+    <div className="w-full max-w-md mx-auto relative min-h-screen">
+      {/* --- Background Content Carousel --- */}
       <div
-        className="relative z-10 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
+        ref={containerRef}
+        className="relative z-10 h-full overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
         onMouseUp={handleBgMouseUp}
         onMouseLeave={handleBgMouseUp}
         onTouchStart={handleBgMouseDown}
         onTouchMove={handleBgMouseMove}
         onTouchEnd={handleBgMouseUp}
       >
-        <div
-          style={{
-            height: containerHeight,
-            transition: "height 300ms ease-out",
-          }}
-          className="overflow-hidden"
-        >
-          <div
-            className="flex items-start transition-transform duration-300 ease-out"
-            style={{
-              transform: `translateZ(0) translateX(${
-                -currentIndex * 100 + (bgTranslateX / 400) * 100
-              }%)`,
-            }}
-          >
-            {items.map((item, index) => (
-              <div
-                key={index}
-                ref={(el) => {
-                  itemRefs.current[index] = el;
-                }}
-                className="min-w-full"
-              >
-                {item.content}
-              </div>
-            ))}
-          </div>
+        <div className="relative w-full min-h-screen overflow-x-hidden">
+          {items.map((item, index) => (
+            <div
+              key={index}
+              ref={(el) => {
+                itemRefs.current[index] = el;
+              }}
+              className="absolute top-0 left-0 w-full h-full overflow-y-auto transition-all duration-300"
+              style={{
+                transform: `translateX(${(index - currentIndex) * 100 + (bgTranslateX / 400) * 100}%)`,
+                opacity: index === currentIndex ? 1 : 0,
+                pointerEvents: index === currentIndex ? 'auto' : 'none',
+                zIndex: index === currentIndex ? 10 : 0,
+              }}
+            >
+              {item.content}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Icon Carousel */}
-      <div className="bg-black fixed inset-x-0 top-0 z-10 pointer-events-none">
-        {/* Outer: allows Y overflow (for shadows above/below) */}
+      {/* --- Icon Carousel --- */}
+      <div className="bg-black fixed inset-x-0 top-0 z-20 pointer-events-none">
         <div
           className="relative z-20 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
           onMouseDown={handleMouseDown}
@@ -206,8 +201,7 @@ export default function MobileCarousel() {
           onTouchMove={handleMouseMove}
           onTouchEnd={handleMouseUp}
         >
-          {/* Inner: clips X only */}
-          <div className="fixed h-34  inset-4 bg-none flex items-start justify-center overflow-x-hidden">
+          <div className="fixed h-34 inset-4 bg-none flex items-start justify-center overflow-x-hidden">
             {items.map((item, index) => (
               <div
                 key={index}
@@ -227,10 +221,8 @@ export default function MobileCarousel() {
               </div>
             ))}
           </div>
-
         </div>
       </div>
-
     </div>
   );
 }
