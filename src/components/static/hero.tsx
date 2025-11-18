@@ -24,7 +24,7 @@ interface HeroProps {
 export function Hero({ onMenuClick }: HeroProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(180); // 3 minutes default
+  const [duration, setDuration] = useState(180);
   const [volume, setVolume] = useState(0.7);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -38,7 +38,6 @@ export function Hero({ onMenuClick }: HeroProps) {
       setIsPlaying(!isPlaying);
     }
   };
-
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (audioRef.current) {
@@ -107,7 +106,9 @@ export function Hero({ onMenuClick }: HeroProps) {
         </div>
 
         {/* Center Branding */}
-        <div className="text-4xl mt-2 font-bold tracking-wider">Ruthless Chris</div>
+        <div className="text-4xl mt-2 font-bold tracking-wider">
+          Ruthless Chris
+        </div>
 
         {/* Right Navigation */}
         <div className="flex items-center space-x-6 text-sm">
@@ -141,55 +142,35 @@ export function Hero({ onMenuClick }: HeroProps) {
       </div>
 
       {/* Audio Player Controls */}
-      <div className="hidden lg:block z-30  p-6">
-        <div className="flex items-center space-x-4">
-          {/* Play/Pause Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-white hover:bg-white/10 p-3 rounded-full"
-            onClick={togglePlay}
-          >
-            {isPlaying ? (
-              <Pause className="w-6 h-6" />
-            ) : (
-              <Play className="w-6 h-6" />
-            )}
-          </Button>
+      <div className="max-w-6xl mx-auto flex items-center space-x-3 pb-4">
+        {/* LIVE Badge */}
+        {/* Play/Pause Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-white hover:bg-white/10 p-3 rounded-full"
+          onClick={togglePlay}
+        >
+          {isPlaying ? (
+            <Pause className="text-cyan-600 w-6 h-6" />
+          ) : (
+            <Play className="text-cyan-600 w-6 h-6" />
+          )}
+        </Button>
 
-          {/* Progress Bar */}
-          <div className="flex-1 mx-4">
-            <div
-              className="h-2 bg-white/20 rounded-full cursor-pointer relative"
-              onClick={handleProgressClick}
-            >
-              <div
-                className="h-full bg-cyan-400 rounded-full transition-all duration-300"
-                style={{ width: `${(currentTime / duration) * 100}%` }}
-              />
-              <div
-                className="absolute top-1/2 transform -translate-y-1/2 w-4 h-4 bg-cyan-400 rounded-full shadow-lg"
-                style={{
-                  left: `${(currentTime / duration) * 100}%`,
-                  marginLeft: "-8px",
-                }}
-              />
-            </div>
-          </div>
+        <div className="flex items-center space-x-1">
+          <span className="w-2.5 h-2.5 bg-cyan-600 animate-pulse rounded-full"></span>
+          <span className="text-cyan-600 text-sm font-semibold tracking-wide">
+            LIVE
+          </span>
+        </div>
 
-          {/* Volume Control */}
-          <div className="flex items-center space-x-2">
-            <Volume2 className="w-5 h-5 text-white" />
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="w-20 h-2 bg-white/20 rounded-full appearance-none cursor-pointer slider"
-            />
-          </div>
+        {/* Full Progress Bar (100%) */}
+        <div className="flex-1 h-2 bg-white/20 rounded-full relative cursor-default">
+          <div
+            className="h-full bg-cyan-600 rounded-full"
+            style={{ width: "100%" }}
+          />
         </div>
       </div>
 
@@ -204,13 +185,8 @@ export function Hero({ onMenuClick }: HeroProps) {
       </div>
 
       {/* Hidden Audio Element */}
-      <audio
-        ref={audioRef}
-        >
-       <source
-            src="https://hello.citrus3.com:8022/stream"
-            type="audio/mpeg"
-          />
+      <audio ref={audioRef}>
+        <source src="https://hello.citrus3.com:8022/stream" type="audio/mpeg" />
       </audio>
     </div>
   );
