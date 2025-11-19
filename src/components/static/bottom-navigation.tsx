@@ -64,7 +64,7 @@ export function BottomNavigation() {
   return (
     <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-blue-950/30 backdrop-blur-2xl z-50">
       <div className="px-4 py-3">
-        <audio ref={audioRef} preload="true">
+        <audio ref={audioRef} preload="none">
           <source
             src="https://hello.citrus3.com:8022/stream"
             type="audio/mpeg"
