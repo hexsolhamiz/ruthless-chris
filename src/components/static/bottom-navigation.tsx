@@ -43,7 +43,7 @@ export function BottomNavigation() {
     };
   }, []);
 
-    const togglePlay = () => {
+  const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -54,9 +54,6 @@ export function BottomNavigation() {
     }
   };
 
-  
-
-
   // const toggleMute = () => {
   //   if (audioRef.current) {
   //     audioRef.current.muted = !isMuted;
@@ -64,12 +61,10 @@ export function BottomNavigation() {
   //   }
   // };
 
- 
-
   return (
     <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-blue-950/30 backdrop-blur-2xl z-50">
       <div className="px-4 py-3">
-        <audio ref={audioRef}>
+        <audio ref={audioRef} preload="true">
           <source
             src="https://hello.citrus3.com:8022/stream"
             type="audio/mpeg"
@@ -88,8 +83,6 @@ export function BottomNavigation() {
               <Play className="text-white h-4 w-4 ml-0.5" />
             )}
           </button>
-
-      
         </div>
       </div>
 
