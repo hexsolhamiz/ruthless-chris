@@ -7,7 +7,7 @@ import { BottomNavigation } from "@/components/static/bottom-navigation";
 import { MusicMadness } from "@/components/music/music-madness";
 import { LiveStream } from "@/components/static/live-stream";
 import { Footer } from "@/components/static/footer";
-// import MobileCarousel from "@/components/carousels/mobile-carousel";
+import MobileCarousel from "@/components/carousels/mobile-carousel";
 import { CtaSection } from "@/components/static/cta-section";
 import Sponsers from "@/components/sponsers/sponsers";
 
@@ -30,7 +30,7 @@ export default function RuthlessChrisPage() {
         <Footer />
       </div>
       <div className="md:hidden bg-black relative flex flex-col justify-between">
-        {/* <MobileCarousel /> */}
+        <MobileCarousel />
         <BottomNavigation />
       </div>
     </>
