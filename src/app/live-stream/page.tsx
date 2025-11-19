@@ -13,7 +13,7 @@ const Page = () => {
     <div>
       <Hero onMenuClick={() => setIsSidebarOpen(true)} />
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <LiveStream videoUrl="https://www.youtube.com/embed/36YnV9STBqc?si=z59ATHulfbim8waW" /> 
+      <LiveStream /> 
       <Footer />
     </div>
   );
