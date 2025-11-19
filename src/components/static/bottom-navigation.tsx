@@ -42,15 +42,32 @@ export function BottomNavigation() {
     const updateTime = () => setCurrentTime(audio.currentTime);
     const updateDuration = () => setDuration(audio.duration);
     const handleEnded = () => setIsPlaying(false);
+    
+    // Safari-specific error handling
+    const handleError = (e: Event) => {
+      console.error('Audio error:', audio.error);
+      console.error('Error code:', audio.error?.code);
+      console.error('Error message:', audio.error?.message);
+      setIsPlaying(false);
+    };
+
+    // Safari needs this to properly load streams
+    const handleCanPlay = () => {
+      console.log('Audio can play');
+    };
 
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleError);
+    audio.addEventListener("canplay", handleCanPlay);
 
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("loadedmetadata", updateDuration);
       audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleError);
+      audio.removeEventListener("canplay", handleCanPlay);
     };
   }, []);
 
@@ -59,7 +76,12 @@ export function BottomNavigation() {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play();
+        // Safari requires user interaction to play audio
+        audioRef.current.load(); // Reload the stream for Safari
+        audioRef.current.play().catch((error) => {
+          console.error("Play error:", error);
+          setIsPlaying(false);
+        });
       }
       setIsPlaying(!isPlaying);
     }
@@ -99,10 +121,18 @@ export function BottomNavigation() {
   return (
     <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-blue-950/30 backdrop-blur-2xl z-50">
       <div className="px-4 py-3">
-        <audio ref={audioRef} preload="none">
+        <audio 
+          ref={audioRef} 
+          preload="none"
+          crossOrigin="anonymous"
+        >
           <source
             src="https://hello.citrus3.com:8022/stream"
             type="audio/mpeg"
+          />
+          <source
+            src="https://hello.citrus3.com:8022/stream"
+            type="audio/aac"
           />
         </audio>
 
