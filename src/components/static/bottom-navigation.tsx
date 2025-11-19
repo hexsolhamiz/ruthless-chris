@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import type React from "react";
+
+import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import {
   Wifi,
@@ -16,7 +18,7 @@ import {
 } from "lucide-react";
 
 const navigationItems = [
-  { id: "live", icon: Wifi, label: "Live" },
+  { id: "live", icon: Wifi, label: "live" },
   { id: "display", icon: Monitor, label: "Display" },
   { id: "info", icon: Info, label: "Info" },
   { id: "phone", icon: Phone, label: "Phone" },
@@ -27,113 +29,164 @@ const navigationItems = [
 export function BottomNavigation() {
   const [activeItem, setActiveItem] = useState("live");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const togglePlay = async () => {
+  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    try {
+    const updateTime = () => setCurrentTime(audio.currentTime);
+    const updateDuration = () => setDuration(audio.duration);
+    const handleEnded = () => setIsPlaying(false);
+
+    // Safari-specific error handling
+    const handleError = (e: Event) => {
+      console.error("Audio error:", audio.error);
+      console.error("Error code:", audio.error?.code);
+      console.error("Error message:", audio.error?.message);
+      setIsPlaying(false);
+    };
+
+    // Safari needs this to properly load streams
+    const handleCanPlay = () => {
+      console.log("Audio can play");
+    };
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleError);
+    audio.addEventListener("canplay", handleCanPlay);
+
+    return () => {
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleError);
+      audio.removeEventListener("canplay", handleCanPlay);
+    };
+  }, []);
+
+  const togglePlay = () => {
+    if (audioRef.current) {
       if (isPlaying) {
-        audio.pause();
-        setIsPlaying(false);
+        audioRef.current.pause();
       } else {
-        await audio.play();
-        setIsPlaying(true);
+        audioRef.current.load();
+        audioRef.current.play().catch((error) => {
+          console.error("Play error:", error);
+          setIsPlaying(false);
+        });
       }
-    } catch (err) {
-      console.error("Safari blocked playback:", err);
+      setIsPlaying(!isPlaying);
     }
   };
 
-  const toggleMute = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const newMuted = !isMuted;
-    audio.muted = newMuted;
-    setIsMuted(newMuted);
+  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = Number.parseFloat(e.target.value);
+    setCurrentTime(newTime);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
+    const newVolume = Number.parseFloat(e.target.value);
     setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+    }
+    if (newVolume > 0) setIsMuted(false);
+  };
 
-    const audio = audioRef.current;
-    if (audio) {
-      audio.volume = newVolume;
-      if (newVolume > 0) {
-        audio.muted = false;
-        setIsMuted(false);
-      }
+  const toggleMute = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
     }
   };
 
-  return (
-    <nav className="sticky bottom-0 w-full bg-blue-950/30 backdrop-blur-2xl z-50">
-      <div className="px-4 py-3">
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
 
-        {/* SAFARI-FRIENDLY AUDIO SETUP */}
-        <audio
-          ref={audioRef}
-          playsInline
-          preload="none"
-          crossOrigin="anonymous"
-        >
+  return (
+    <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-blue-950/30 backdrop-blur-2xl z-50">
+      <div className="px-4 py-3">
+        <audio ref={audioRef} preload="none" crossOrigin="anonymous">
           <source
             src="https://hello.citrus3.com:8022/stream"
             type="audio/mpeg"
           />
+          <source
+            src="https://hello.citrus3.com:8022/stream"
+            type="audio/aacp"
+          />
         </audio>
 
         <div className="flex items-center gap-3">
-          {/* Play Button */}
+          {/* Play/Pause Button */}
           <button
             onClick={togglePlay}
-            className="flex items-center justify-center h-8 w-8 rounded-full"
+            className="flex items-center justify-center h-8 w-8 rounded-full transition-colors"
           >
             {isPlaying ? (
               <Pause className="h-4 w-4 text-white" />
             ) : (
-              <Play className="h-4 w-4 text-white" />
+              <Play className="text-white h-4 w-4 ml-0.5" />
             )}
           </button>
 
-          {/* LIVE Indicator */}
-          <span className="text-xs text-white bg-red-600 px-2 py-0.5 rounded-md">
-            LIVE
-          </span>
+          {/* Progress Bar */}
+          <div className="flex-1 flex items-center gap-2">
+            <span className="text-xs text-white min-w-[35px]">
+              {formatTime(currentTime)}
+            </span>
+            <input
+              type="range"
+              min="0"
+              max={duration || 0}
+              value={currentTime}
+              onChange={handleProgressChange}
+              className="flex-1 h-1 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0"
+            />
+            <span className="text-xs text-white min-w-[35px]">
+              {/* {formatTime(duration)} */}
+            </span>
+          </div>
 
-          {/* Volume */}
-          <button onClick={toggleMute} className="text-white">
-            {isMuted || volume === 0 ? (
-              <VolumeX className="h-4 w-4" />
-            ) : (
-              <Volume2 className="h-4 w-4" />
-            )}
-          </button>
-
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={isMuted ? 0 : volume}
-            onChange={handleVolumeChange}
-            className="w-20 h-1 rounded-lg appearance-none cursor-pointer
-              [&::-webkit-slider-thumb]:appearance-none
-              [&::-webkit-slider-thumb]:w-3
-              [&::-webkit-slider-thumb]:h-3
-              [&::-webkit-slider-thumb]:rounded-full
-              [&::-webkit-slider-thumb]:bg-primary
-            "
-          />
+          {/* Volume Control */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleMute}
+              className="text-white transition-colors"
+            >
+              {isMuted || volume === 0 ? (
+                <VolumeX className="h-4 w-4" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+              className="w-16 h-1 bg-secondary rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Bottom Navigation */}
       <div className="flex items-center justify-around px-2 py-2">
         {navigationItems.map((item) => {
           const Icon = item.icon;
@@ -142,14 +195,12 @@ export function BottomNavigation() {
               key={item.id}
               onClick={() => setActiveItem(item.id)}
               className={cn(
-                "flex flex-col items-center justify-center min-w-0 flex-1 py-2 px-1 transition-colors rounded-md",
-                "hover:bg-accent text-white"
+                "flex flex-col items-center justify-center min-w-0 flex-1 py-2 px-1 transition-colors",
+                "hover:bg-accent text-white rounded-md"
               )}
             >
               <Icon className="h-5 w-5 mb-1" />
-              <span className="text-xs font-medium truncate">
-                {item.label}
-              </span>
+              <span className="text-xs font-medium truncate">{item.label}</span>
             </button>
           );
         })}
