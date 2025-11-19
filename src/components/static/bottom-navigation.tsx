@@ -13,8 +13,8 @@ import {
   Share2,
   Play,
   Pause,
-  Volume2,
-  VolumeX,
+  // Volume2,
+  // VolumeX,
 } from "lucide-react";
 
 const navigationItems = [
@@ -28,7 +28,7 @@ const navigationItems = [
 
 export function BottomNavigation() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  // const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   useEffect(() => {
     const audio = audioRef.current;
@@ -57,12 +57,12 @@ export function BottomNavigation() {
   
 
 
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
+  // const toggleMute = () => {
+  //   if (audioRef.current) {
+  //     audioRef.current.muted = !isMuted;
+  //     setIsMuted(!isMuted);
+  //   }
+  // };
 
  
 
