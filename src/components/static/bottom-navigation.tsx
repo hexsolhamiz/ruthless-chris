@@ -33,6 +33,10 @@ export function BottomNavigation() {
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  const [audioError, setAudioError] = useState<string | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -43,16 +47,23 @@ export function BottomNavigation() {
     const updateDuration = () => setDuration(audio.duration);
     const handleEnded = () => setIsPlaying(false);
     
-    // Safari-specific error handling
     const handleError = (e: Event) => {
-      console.error('Audio error:', audio.error);
-      console.error('Error code:', audio.error?.code);
-      console.error('Error message:', audio.error?.message);
+      const errorMessages: { [key: number]: string } = {
+        1: 'MEDIA_ERR_ABORTED - Playback aborted',
+        2: 'MEDIA_ERR_NETWORK - Network error',
+        3: 'MEDIA_ERR_DECODE - Decoding error',
+        4: 'MEDIA_ERR_SRC_NOT_SUPPORTED - Format not supported',
+      };
+      
+      const errorCode = audio.error?.code || 0;
+      const errorMsg = errorMessages[errorCode] || 'Unknown error';
+      setAudioError(errorMsg);
+      console.error('Audio error:', errorMsg, audio.error);
       setIsPlaying(false);
     };
 
-    // Safari needs this to properly load streams
     const handleCanPlay = () => {
+      setAudioError(null);
       console.log('Audio can play');
     };
 
@@ -68,22 +79,69 @@ export function BottomNavigation() {
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("error", handleError);
       audio.removeEventListener("canplay", handleCanPlay);
+      
+      // Cleanup Web Audio API
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
     };
   }, []);
 
-  const togglePlay = () => {
-    if (audioRef.current) {
+  const initWebAudio = () => {
+    if (!audioRef.current || audioContextRef.current) return;
+
+    try {
+      // Create Web Audio API context for better Safari compatibility
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = new AudioContextClass();
+      audioContextRef.current = ctx;
+
+      // Create source node
+      const source = ctx.createMediaElementSource(audioRef.current);
+      sourceNodeRef.current = source;
+
+      // Create gain node for volume control
+      const gainNode = ctx.createGain();
+      gainNodeRef.current = gainNode;
+
+      // Connect: source -> gain -> destination
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      console.log('Web Audio API initialized');
+    } catch (error) {
+      console.error('Web Audio API error:', error);
+    }
+  };
+
+  const togglePlay = async () => {
+    if (!audioRef.current) return;
+
+    try {
       if (isPlaying) {
         audioRef.current.pause();
+        setIsPlaying(false);
       } else {
-        // Safari requires user interaction to play audio
-        audioRef.current.load(); // Reload the stream for Safari
-        audioRef.current.play().catch((error) => {
-          console.error("Play error:", error);
-          setIsPlaying(false);
-        });
+        // Initialize Web Audio API on first play (required for Safari)
+        if (!audioContextRef.current) {
+          initWebAudio();
+        }
+
+        // Resume audio context if suspended (Safari requirement)
+        if (audioContextRef.current?.state === 'suspended') {
+          await audioContextRef.current.resume();
+        }
+
+        // Load and play
+        audioRef.current.load();
+        await audioRef.current.play();
+        setIsPlaying(true);
+        setAudioError(null);
       }
-      setIsPlaying(!isPlaying);
+    } catch (error) {
+      console.error("Play error:", error);
+      setAudioError(`Play failed: ${error}`);
+      setIsPlaying(false);
     }
   };
 
@@ -98,9 +156,16 @@ export function BottomNavigation() {
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = Number.parseFloat(e.target.value);
     setVolume(newVolume);
+    
+    // Use Web Audio API gain node if available
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = newVolume;
+    }
+    
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
     }
+    
     if (newVolume > 0) setIsMuted(false);
   };
 
@@ -108,6 +173,11 @@ export function BottomNavigation() {
     if (audioRef.current) {
       audioRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
+      
+      // Also mute via gain node if available
+      if (gainNodeRef.current) {
+        gainNodeRef.current.gain.value = isMuted ? volume : 0;
+      }
     }
   };
 
@@ -126,19 +196,17 @@ export function BottomNavigation() {
           preload="none"
           crossOrigin="anonymous"
         >
-           <source
-            src="https://hello.citrus3.com:8022/stream"
-            type="audio/aacp"
-          />
           <source
             src="https://hello.citrus3.com:8022/stream"
             type="audio/mpeg"
           />
-          <source
-            src="https://hello.citrus3.com:8022/stream"
-            type="audio/aac"
-          />
         </audio>
+
+        {audioError && (
+          <div className="mb-2 text-xs text-red-400 bg-red-950/20 px-2 py-1 rounded">
+            {audioError}
+          </div>
+        )}
 
         <div className="flex items-center gap-3">
           {/* Play/Pause Button */}
