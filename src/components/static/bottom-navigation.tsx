@@ -1,8 +1,6 @@
 "use client";
 
-import type React from "react";
-
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import {
   Wifi,
@@ -17,7 +15,42 @@ import {
   VolumeX,
 } from "lucide-react";
 
-const navigationItems = [
+// Typed Howl/Howler interfaces
+interface HowlOptions {
+  src: string[];
+  html5?: boolean;
+  format?: string[];
+  volume?: number;
+  onload?: () => void;
+  onloaderror?: (id: number, error: unknown) => void;
+  onplayerror?: (id: number, error: unknown) => void;
+  onplay?: () => void;
+  onpause?: () => void;
+}
+
+interface HowlInstance {
+  play: () => void;
+  pause: () => void;
+  unload: () => void;
+  volume: (v: number) => void;
+  mute: (m: boolean) => void;
+  once: (event: string, fn: () => void) => void;
+}
+
+declare global {
+  interface Window {
+    Howl?: new (options: HowlOptions) => HowlInstance;
+    Howler?: unknown;
+  }
+}
+
+interface NavigationItem {
+  id: string;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+}
+
+const navigationItems: NavigationItem[] = [
   { id: "live", icon: Wifi, label: "live" },
   { id: "display", icon: Monitor, label: "Display" },
   { id: "info", icon: Info, label: "Info" },
@@ -27,230 +60,150 @@ const navigationItems = [
 ];
 
 export function BottomNavigation() {
-  const [activeItem, setActiveItem] = useState("live");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
-  const [audioError, setAudioError] = useState<string | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const gainNodeRef = useRef<GainNode | null>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [activeItem, setActiveItem] = useState<string>("live");
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(1);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [sound, setSound] = useState<HowlInstance | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [howlerLoaded, setHowlerLoaded] = useState<boolean>(false);
 
+  // Load Howler.js
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const script = document.createElement("script");
+    script.src =
+      "https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js";
+    script.async = true;
 
-    const updateTime = () => setCurrentTime(audio.currentTime);
-    const updateDuration = () => setDuration(audio.duration);
-    const handleEnded = () => setIsPlaying(false);
-    
-    const handleError = (e: Event) => {
-      const errorMessages: { [key: number]: string } = {
-        1: 'MEDIA_ERR_ABORTED - Playback aborted',
-        2: 'MEDIA_ERR_NETWORK - Network error',
-        3: 'MEDIA_ERR_DECODE - Decoding error',
-        4: 'MEDIA_ERR_SRC_NOT_SUPPORTED - Format not supported',
-      };
-      
-      const errorCode = audio.error?.code || 0;
-      const errorMsg = errorMessages[errorCode] || 'Unknown error';
-      setAudioError(errorMsg);
-      console.error('Audio error:', errorMsg, audio.error);
-      setIsPlaying(false);
+    script.onload = () => {
+      setHowlerLoaded(true);
+    };
+    script.onerror = () => {
+      setError("Failed to load audio library");
     };
 
-    const handleCanPlay = () => {
-      setAudioError(null);
-      console.log('Audio can play');
-    };
-
-    audio.addEventListener("timeupdate", updateTime);
-    audio.addEventListener("loadedmetadata", updateDuration);
-    audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("error", handleError);
-    audio.addEventListener("canplay", handleCanPlay);
+    document.body.appendChild(script);
 
     return () => {
-      audio.removeEventListener("timeupdate", updateTime);
-      audio.removeEventListener("loadedmetadata", updateDuration);
-      audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("error", handleError);
-      audio.removeEventListener("canplay", handleCanPlay);
-      
-      // Cleanup Web Audio API
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
+      sound?.unload();
     };
-  }, []);
+  }, [sound]);
 
-  const initWebAudio = () => {
-    if (!audioRef.current || audioContextRef.current) return;
+  // Initialize stream
+  useEffect(() => {
+    if (!howlerLoaded || sound || !window.Howl) return;
 
     try {
-      // Create Web Audio API context for better Safari compatibility
-      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      const ctx = new AudioContextClass();
-      audioContextRef.current = ctx;
+      const newSound = new window.Howl({
+        src: ["https://hello.citrus3.com:8022/stream"],
+        html5: true,
+        format: ["mp3", "aac"],
+        volume,
+        onload: () => {
+          setIsLoading(false);
+        },
+        onloaderror: (_id, err) => {
+          setError("Failed to load stream");
+          setIsLoading(false);
+        },
+        onplayerror: (_id, err) => {
+          setError("Failed to play stream");
+          newSound.once("unlock", () => {
+            newSound.play();
+          });
+        },
+        onplay: () => {
+          setIsPlaying(true);
+          setIsLoading(false);
+        },
+        onpause: () => setIsPlaying(false),
+      });
 
-      // Create source node
-      const source = ctx.createMediaElementSource(audioRef.current);
-      sourceNodeRef.current = source;
-
-      // Create gain node for volume control
-      const gainNode = ctx.createGain();
-      gainNodeRef.current = gainNode;
-
-      // Connect: source -> gain -> destination
-      source.connect(gainNode);
-      gainNode.connect(ctx.destination);
-
-      console.log('Web Audio API initialized');
-    } catch (error) {
-      console.error('Web Audio API error:', error);
+      setSound(newSound);
+    } catch (err) {
+      setError("Failed to initialize audio");
     }
-  };
+  }, [howlerLoaded, sound, volume]);
 
-  const togglePlay = async () => {
-    if (!audioRef.current) return;
+  const togglePlay = () => {
+    if (!sound) {
+      setError("Audio not initialized");
+      return;
+    }
 
     try {
       if (isPlaying) {
-        audioRef.current.pause();
+        sound.pause();
         setIsPlaying(false);
+        setIsLoading(false);
       } else {
-        // Initialize Web Audio API on first play (required for Safari)
-        if (!audioContextRef.current) {
-          initWebAudio();
-        }
-
-        // Resume audio context if suspended (Safari requirement)
-        if (audioContextRef.current?.state === 'suspended') {
-          await audioContextRef.current.resume();
-        }
-
-        // Load and play
-        audioRef.current.load();
-        await audioRef.current.play();
-        setIsPlaying(true);
-        setAudioError(null);
+        setIsLoading(true);
+        sound.play();
       }
-    } catch (error) {
-      console.error("Play error:", error);
-      setAudioError(`Play failed: ${error}`);
+    } catch (err) {
+      setError("Playback error");
       setIsPlaying(false);
-    }
-  };
-
-  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = Number.parseFloat(e.target.value);
-    setCurrentTime(newTime);
-    if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
+      setIsLoading(false);
     }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number.parseFloat(e.target.value);
+    const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    
-    // Use Web Audio API gain node if available
-    if (gainNodeRef.current) {
-      gainNodeRef.current.gain.value = newVolume;
-    }
-    
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-    
+    sound?.volume(newVolume);
     if (newVolume > 0) setIsMuted(false);
   };
 
   const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-      
-      // Also mute via gain node if available
-      if (gainNodeRef.current) {
-        gainNodeRef.current.gain.value = isMuted ? volume : 0;
-      }
-    }
-  };
-
-  const formatTime = (time: number) => {
-    if (isNaN(time)) return "0:00";
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    if (!sound) return;
+    const newMuted = !isMuted;
+    setIsMuted(newMuted);
+    sound.mute(newMuted);
   };
 
   return (
     <nav className="sticky bottom-0 w-full overflow-hidden right-0 bg-blue-950/30 backdrop-blur-2xl z-50">
       <div className="px-4 py-3">
-        <audio 
-          ref={audioRef} 
-          preload="none"
-          crossOrigin="anonymous"
-        >
-          <source
-            src="https://hello.citrus3.com:8022/stream"
-            type="audio/mpeg"
-          />
-        </audio>
-
-        {audioError && (
+        {error && (
           <div className="mb-2 text-xs text-red-400 bg-red-950/20 px-2 py-1 rounded">
-            {audioError}
+            {error}
           </div>
         )}
 
         <div className="flex items-center gap-3">
-          {/* Play/Pause Button */}
           <button
             onClick={togglePlay}
-            className="flex items-center justify-center h-8 w-8 rounded-full transition-colors"
+            disabled={!howlerLoaded || isLoading}
+            className="flex items-center justify-center h-8 w-8 rounded-full transition-colors disabled:opacity-50"
           >
-            {isPlaying ? (
+            {isLoading ? (
+              <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : isPlaying ? (
               <Pause className="h-4 w-4 text-white" />
             ) : (
-              <Play className="text-white h-4 w-4 ml-0.5" />
+              <Play className="h-4 w-4 text-white ml-0.5" />
             )}
           </button>
 
-          {/* Progress Bar */}
           <div className="flex-1 flex items-center gap-2">
-            <span className="text-xs text-white min-w-[35px]">
-              {formatTime(currentTime)}
-            </span>
-            <input
-              type="range"
-              min="0"
-              max={duration || 0}
-              value={currentTime}
-              onChange={handleProgressChange}
-              className="flex-1 h-1 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0"
-            />
-            <span className="text-xs text-white min-w-[35px]">
-              {/* {formatTime(duration)} */}
-            </span>
+            {isPlaying && (
+              <span className="flex items-center gap-2 text-xs text-white">
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                LIVE
+              </span>
+            )}
           </div>
 
-          {/* Volume Control */}
           <div className="flex items-center gap-2">
-            <button
-              onClick={toggleMute}
-              className="text-white transition-colors"
-            >
+            <button onClick={toggleMute} className="text-white">
               {isMuted || volume === 0 ? (
                 <VolumeX className="h-4 w-4" />
               ) : (
                 <Volume2 className="h-4 w-4" />
               )}
             </button>
+
             <input
               type="range"
               min="0"
@@ -258,7 +211,7 @@ export function BottomNavigation() {
               step="0.01"
               value={isMuted ? 0 : volume}
               onChange={handleVolumeChange}
-              className="w-16 h-1 bg-secondary rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0"
+              className="w-16 h-1 bg-secondary rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
             />
           </div>
         </div>
