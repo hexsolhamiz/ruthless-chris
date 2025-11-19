@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Menu,
@@ -13,7 +13,6 @@ import {
   Share2,
   Play,
   Pause,
-  Volume2,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -23,9 +22,7 @@ interface HeroProps {
 
 export function Hero({ onMenuClick }: HeroProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(180);
-  const [volume, setVolume] = useState(0.7);
+
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = () => {
@@ -39,40 +36,8 @@ export function Hero({ onMenuClick }: HeroProps) {
     }
   };
 
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (audioRef.current) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const newTime = (clickX / rect.width) * duration;
-      audioRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
-    }
-  };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number.parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-  };
 
-  useEffect(() => {
-    // Simulate audio progress for demo
-    const interval = setInterval(() => {
-      if (isPlaying) {
-        setCurrentTime((prev) => {
-          if (prev >= duration) {
-            setIsPlaying(false);
-            return 0;
-          }
-          return prev + 1;
-        });
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isPlaying, duration]);
 
   return (
     <div className="relative  min-h-[500px] lg:min-h-[400px] bg-[url(/hero.png)] bg-cover bg-center bg-no-repeat overflow-hidden">
@@ -142,7 +107,7 @@ export function Hero({ onMenuClick }: HeroProps) {
       </div>
 
       {/* Audio Player Controls */}
-      <div className="max-w-6xl mx-auto flex items-center space-x-3 pb-4">
+      <div className="hidden lg:flex max-w-6xl mx-auto items-center space-x-3 pb-4">
         {/* LIVE Badge */}
         {/* Play/Pause Button */}
         <Button

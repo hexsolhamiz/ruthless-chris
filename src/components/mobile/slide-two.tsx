@@ -9,7 +9,7 @@ export const SlideTwo = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <StreamBanner />
-      <LiveStream videoUrl="https://www.youtube.com/embed/36YnV9STBqc?si=z59ATHulfbim8waW" />
+      <LiveStream />
       <MobileCta />
       <Footer />
     </div>

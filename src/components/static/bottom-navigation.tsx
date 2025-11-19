@@ -133,7 +133,7 @@ export function BottomNavigation() {
               className="flex-1 h-1 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:border-0"
             />
             <span className="text-xs text-white min-w-[35px]">
-              {formatTime(duration)}
+              {/* {formatTime(duration)} */}
             </span>
           </div>
 

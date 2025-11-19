@@ -24,10 +24,9 @@ export default function RuthlessChrisPage() {
         />
         <MusicMadness />
         {/* <MusicShowCarousel  /> */}
-        <LiveStream videoUrl="https://www.youtube.com/embed/36YnV9STBqc?si=z59ATHulfbim8waW" />
+        <LiveStream />
         <Sponsers />
         <CtaSection />
-
         <Footer />
       </div>
       <div className="md:hidden bg-black relative flex flex-col justify-between">
