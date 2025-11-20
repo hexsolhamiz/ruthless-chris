@@ -33,9 +33,11 @@ export function BottomNavigation() {
   const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [streamMethod, setStreamMethod] = useState<'direct' | 'cors-proxy'>('direct');
   const audioRef = useRef<HTMLAudioElement>(null);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const retryCountRef = useRef(0);
+  const playAttemptRef = useRef(0);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -53,6 +55,7 @@ export function BottomNavigation() {
       setIsPlaying(true);
       setIsLoading(false);
       setError(null);
+      playAttemptRef.current = 0;
     };
 
     const handleWaiting = () => {
@@ -71,21 +74,38 @@ export function BottomNavigation() {
 
     const handlePause = () => {
       setIsPlaying(false);
+      setIsLoading(false);
     };
 
     const handleError = () => {
       const errorCode = audio.error?.code;
       const errorMessages: { [key: number]: string } = {
         1: 'Loading aborted',
-        2: 'Network error - Check your connection',
-        3: 'Decoding error - Stream format issue',
-        4: 'Stream format not supported',
+        2: 'Network error',
+        3: 'Stream format issue',
+        4: 'Format not supported',
       };
 
       const errorMsg = errorCode ? errorMessages[errorCode] : 'Unknown error';
-      console.error('Stream error:', errorMsg, audio.error);
+      console.error('Stream error:', errorMsg, 'Code:', errorCode, audio.error);
       
-      // Retry logic for network errors
+      // Try CORS proxy on first decode error (code 3)
+      if (errorCode === 3 && playAttemptRef.current === 0 && streamMethod === 'direct') {
+        playAttemptRef.current++;
+        console.log('Trying CORS proxy fallback...');
+        setStreamMethod('cors-proxy');
+        setError('Trying alternative connection...');
+        
+        retryTimeoutRef.current = setTimeout(() => {
+          if (audio) {
+            audio.load();
+            audio.play().catch(err => console.error('Proxy retry failed:', err));
+          }
+        }, 1000);
+        return;
+      }
+      
+      // Regular retry logic for network errors
       if (errorCode === 2 && retryCountRef.current < 3) {
         retryCountRef.current++;
         console.log(`Retrying connection (${retryCountRef.current}/3)...`);
@@ -104,18 +124,9 @@ export function BottomNavigation() {
       }
     };
 
-    // Safari-specific event listeners
     const handleLoadStart = () => {
       console.log('Loading stream...');
       setIsLoading(true);
-    };
-
-    const handleLoadedData = () => {
-      console.log('Stream data loaded');
-    };
-
-    const handleProgress = () => {
-      console.log('Downloading stream...');
     };
 
     audio.addEventListener('canplay', handleCanPlay);
@@ -126,8 +137,6 @@ export function BottomNavigation() {
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('error', handleError);
     audio.addEventListener('loadstart', handleLoadStart);
-    audio.addEventListener('loadeddata', handleLoadedData);
-    audio.addEventListener('progress', handleProgress);
 
     return () => {
       audio.removeEventListener('canplay', handleCanPlay);
@@ -138,14 +147,23 @@ export function BottomNavigation() {
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('error', handleError);
       audio.removeEventListener('loadstart', handleLoadStart);
-      audio.removeEventListener('loadeddata', handleLoadedData);
-      audio.removeEventListener('progress', handleProgress);
       
       if (retryTimeoutRef.current) {
         clearTimeout(retryTimeoutRef.current);
       }
     };
-  }, [isPlaying]);
+  }, [isPlaying, streamMethod]);
+
+  const getStreamUrl = () => {
+    const baseUrl = 'https://hello.citrus3.com:8022/stream';
+    
+    if (streamMethod === 'cors-proxy') {
+      // Use CORS proxy for Safari
+      return `https://corsproxy.io/?${encodeURIComponent(baseUrl)}`;
+    }
+    
+    return baseUrl;
+  };
 
   const togglePlay = async () => {
     const audio = audioRef.current;
@@ -161,10 +179,9 @@ export function BottomNavigation() {
         setError(null);
         retryCountRef.current = 0;
         
-        // Force reload the stream for a fresh connection
+        // Force reload with current stream method
         audio.load();
         
-        // Play with promise handling
         const playPromise = audio.play();
         
         if (playPromise !== undefined) {
@@ -175,9 +192,8 @@ export function BottomNavigation() {
             .catch((err) => {
               console.error('Play failed:', err);
               
-              // Handle autoplay restrictions
               if (err.name === 'NotAllowedError') {
-                setError('Click play to start (browser restriction)');
+                setError('Click play to start');
               } else if (err.name === 'NotSupportedError') {
                 setError('Stream format not supported');
               } else {
@@ -223,22 +239,24 @@ export function BottomNavigation() {
           ref={audioRef}
           preload="none"
           crossOrigin="anonymous"
+          key={streamMethod}
         >
           <source
-            src="https://hello.citrus3.com:8022/stream"
+            src={getStreamUrl()}
             type="audio/mpeg"
-          />
-          <source
-            src="https://hello.citrus3.com:8022/stream"
-            type="audio/aac"
           />
         </audio>
 
         {error && (
-          <div className="mb-2 text-xs text-red-400 bg-red-950/20 px-2 py-1 rounded flex items-center gap-2">
+          <div className="mb-2 text-xs text-yellow-400 bg-yellow-950/20 px-2 py-1 rounded flex items-center gap-2">
             <span className="flex-1">{error}</span>
+            {streamMethod === 'cors-proxy' && (
+              <span className="text-[10px] text-yellow-300 bg-yellow-900/30 px-1 py-0.5 rounded">
+                PROXY
+              </span>
+            )}
             {retryCountRef.current > 0 && (
-              <div className="h-3 w-3 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+              <div className="h-3 w-3 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin" />
             )}
           </div>
         )}
@@ -262,12 +280,15 @@ export function BottomNavigation() {
           {/* Live Indicator */}
           <div className="flex-1 flex items-center gap-2">
             {isPlaying && !isLoading && (
-              <span className="flex items-center gap-2 text-xs text-white">
-                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                LIVE
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-2 text-xs text-white">
+                  <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                  LIVE
+                </span>
+                <span className="text-[10px] text-white/50">Kemet FM</span>
+              </div>
             )}
-            {isLoading && isPlaying && (
+            {isLoading && (
               <span className="text-xs text-white/70">
                 Connecting...
               </span>
