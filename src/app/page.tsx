@@ -20,7 +20,7 @@ export default function RuthlessChrisPage() {
     // Small delay ensures browser finishes "loading" state before heavy carousel mounts
     const timer = setTimeout(() => {
       setCarouselReady(true);
-    }, 300); // 300ms delay – safe and smooth
+    }, 3000); // 300ms delay – safe and smooth
 
     return () => clearTimeout(timer);
   }, []);
