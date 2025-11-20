@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Hero } from "@/components/static/hero";
 import { Sidebar } from "@/components/static/sidebar";
 import { BottomNavigation } from "@/components/static/bottom-navigation";
@@ -13,17 +13,6 @@ import Sponsers from "@/components/sponsers/sponsers";
 
 export default function RuthlessChrisPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const [carouselReady, setCarouselReady] = useState(false);
-
-  useEffect(() => {
-    // Small delay ensures browser finishes "loading" state before heavy carousel mounts
-    const timer = setTimeout(() => {
-      setCarouselReady(true);
-    }, 3000); // 300ms delay – safe and smooth
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <>
@@ -43,15 +32,7 @@ export default function RuthlessChrisPage() {
 
       {/* MOBILE VIEW */}
       <div className="md:hidden bg-black relative flex flex-col justify-between">
-        
-        {/* 🚀 Lazy-loaded carousel — WILL NOT block page load */}
-        {carouselReady ? (
-          <MobileCarousel />
-        ) : (
-          <div className="w-full h-[40vh] flex items-center justify-center text-white opacity-40">
-            {/* Optional temporary fallback */}
-          </div>
-        )}
+        <MobileCarousel />
 
         <BottomNavigation />
       </div>
