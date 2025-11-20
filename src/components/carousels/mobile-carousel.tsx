@@ -1,39 +1,127 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { items } from "@/data/slides";
 
 export default function MobileCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
+  const [bgTranslateX, setBgTranslateX] = useState(0);
+  const [bgIsDragging, setBgIsDragging] = useState(false);
+  const [bgStartX, setBgStartX] = useState(0);
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Drag state refs (no React state, no re-renders)
-  const dragRef = useRef({
-    startX: 0,
-    isDragging: false,
-    translateX: 0,
-    animationFrame: 0,
-  });
+  // ✅ Reset scroll to top when slide changes
+  useEffect(() => {
+    const currentItem = itemRefs.current[currentIndex];
+    if (currentItem) {
+      // Force scroll to top immediately
+      currentItem.scrollTop = 0;
+    }
+  }, [currentIndex]);
 
-  const bgDragRef = useRef({
-    startX: 0,
-    isDragging: false,
-    translateX: 0,
-    animationFrame: 0,
-  });
+  const slideWidth = 85;
 
-  const slideWidth = 85; // icon carousel width
+  // --- Icon Carousel Handlers ---
+  const handleMouseDown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    setIsDragging(true);
+    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
+    setStartX(clientX);
+  };
 
-  // --- Slide changing logic ---
+  const handleMouseMove = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    if (!isDragging) return;
+    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
+    const deltaX = clientX - startX;
+    setTranslateX(deltaX);
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+
+    const threshold = slideWidth / 3;
+    let nextIndex = currentIndex;
+
+    if (translateX > threshold) {
+      nextIndex = (currentIndex - 1 + items.length) % items.length;
+    } else if (translateX < -threshold) {
+      nextIndex = (currentIndex + 1) % items.length;
+    }
+
+    if (nextIndex !== currentIndex) {
+      handleChangeSlide(nextIndex);
+    }
+
+    setIsDragging(false);
+    setTranslateX(0);
+    setStartX(0);
+  };
+
+  // --- Background Carousel Handlers ---
+  const handleBgMouseDown = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    setBgIsDragging(true);
+    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
+    setBgStartX(clientX);
+  };
+
+  const handleBgMouseMove = (
+    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+  ) => {
+    if (!bgIsDragging) return;
+    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
+    const deltaX = clientX - bgStartX;
+    setBgTranslateX(deltaX);
+  };
+
+  const handleBgMouseUp = () => {
+    if (!bgIsDragging) return;
+
+    const threshold = 100;
+    let nextIndex = currentIndex;
+
+    if (bgTranslateX > threshold && currentIndex > 0) {
+      nextIndex = currentIndex - 1;
+    } else if (bgTranslateX < -threshold && currentIndex < items.length - 1) {
+      nextIndex = currentIndex + 1;
+    }
+
+    if (nextIndex !== currentIndex) {
+      handleChangeSlide(nextIndex);
+    }
+
+    setBgIsDragging(false);
+    setBgTranslateX(0);
+    setBgStartX(0);
+  };
+
+  // --- Change slide + update indices ---
   const handleChangeSlide = (newIndex: number) => {
     setPrevIndex(currentIndex);
     setCurrentIndex(newIndex);
   };
 
-  // --- Animation helpers ---
+  // --- Style helpers ---
+  const getSlideClass = (index: number) => {
+    if (index === currentIndex) {
+      return "z-20 scale-100 translate-y-1 opacity-100 shadow-xl transition-all duration-300";
+    }
+    if (index === prevIndex) {
+      return "z-10 scale-80 opacity-90 translate-y-0 transition-all duration-300";
+    }
+    return "z-0 scale-90 opacity-90 translate-y-0 transition-all duration-300";
+  };
+
   const getSlideStyle = (index: number) => {
     let distance = index - currentIndex;
     if (distance > items.length / 2) distance -= items.length;
@@ -70,112 +158,17 @@ export default function MobileCarousel() {
     };
   };
 
-  // --- Drag handlers for icon carousel ---
-  const startDrag = (e: React.MouseEvent | React.TouchEvent) => {
-    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
-    dragRef.current.isDragging = true;
-    dragRef.current.startX = clientX;
-  };
-
-  const onDrag = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!dragRef.current.isDragging) return;
-    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
-    dragRef.current.translateX = clientX - dragRef.current.startX;
-
-    cancelAnimationFrame(dragRef.current.animationFrame);
-    dragRef.current.animationFrame = requestAnimationFrame(() => {
-      itemRefs.current.forEach((item, index) => {
-        if (!item) return;
-        const style = getSlideStyle(index);
-        const baseTransform = style.transform;
-        const translateOffset =
-          index === currentIndex ? dragRef.current.translateX : 0;
-        item.style.transform = `${baseTransform} translateX(${translateOffset}px)`;
-      });
-    });
-  };
-
-  const endDrag = () => {
-    if (!dragRef.current.isDragging) return;
-
-    const threshold = slideWidth / 3;
-    let nextIndex = currentIndex;
-
-    if (dragRef.current.translateX > threshold) {
-      nextIndex = (currentIndex - 1 + items.length) % items.length;
-    } else if (dragRef.current.translateX < -threshold) {
-      nextIndex = (currentIndex + 1) % items.length;
-    }
-
-    if (nextIndex !== currentIndex) handleChangeSlide(nextIndex);
-
-    dragRef.current.isDragging = false;
-    dragRef.current.translateX = 0;
-
-    // Reset transforms after drag ends
-    itemRefs.current.forEach((item, index) => {
-      if (!item) return;
-      const style = getSlideStyle(index);
-      Object.assign(item.style, style);
-    });
-  };
-
-  // --- Background drag (similar approach) ---
-  const startBgDrag = (e: React.MouseEvent | React.TouchEvent) => {
-    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
-    bgDragRef.current.isDragging = true;
-    bgDragRef.current.startX = clientX;
-  };
-
-  const onBgDrag = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!bgDragRef.current.isDragging) return;
-    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
-    bgDragRef.current.translateX = clientX - bgDragRef.current.startX;
-
-    cancelAnimationFrame(bgDragRef.current.animationFrame);
-    bgDragRef.current.animationFrame = requestAnimationFrame(() => {
-      if (!containerRef.current) return;
-      containerRef.current.style.transform = `translateX(${
-        (bgDragRef.current.translateX / 400) * 100
-      }%)`;
-    });
-  };
-
-  const endBgDrag = () => {
-    if (!bgDragRef.current.isDragging) return;
-
-    const threshold = 100;
-    let nextIndex = currentIndex;
-
-    if (bgDragRef.current.translateX > threshold && currentIndex > 0) {
-      nextIndex = currentIndex - 1;
-    } else if (
-      bgDragRef.current.translateX < -threshold &&
-      currentIndex < items.length - 1
-    ) {
-      nextIndex = currentIndex + 1;
-    }
-
-    if (nextIndex !== currentIndex) handleChangeSlide(nextIndex);
-
-    bgDragRef.current.isDragging = false;
-    bgDragRef.current.translateX = 0;
-    if (containerRef.current) containerRef.current.style.transform = "translateX(0)";
-  };
-
   return (
     <div className="w-full max-w-md mx-auto relative min-h-screen">
-      {/* Background Carousel */}
+      {/* --- Background Content Carousel --- */}
       <div
         ref={containerRef}
-        className="relative z-10 h-full overflow-visible cursor-grab active:cursor-grabbing select-none"
-        onMouseDown={startBgDrag}
-        onMouseMove={onBgDrag}
-        onMouseUp={endBgDrag}
-        onMouseLeave={endBgDrag}
-        onTouchStart={startBgDrag}
-        onTouchMove={onBgDrag}
-        onTouchEnd={endBgDrag}
+        className="relative z-10 h-full overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
+        onMouseUp={handleBgMouseUp}
+        onMouseLeave={handleBgMouseUp}
+        onTouchStart={handleBgMouseDown}
+        onTouchMove={handleBgMouseMove}
+        onTouchEnd={handleBgMouseUp}
       >
         <div className="relative w-full min-h-screen overflow-x-hidden">
           {items.map((item, index) => (
@@ -186,9 +179,9 @@ export default function MobileCarousel() {
               }}
               className="absolute top-0 left-0 w-full h-full overflow-y-auto transition-all duration-300"
               style={{
-                transform: `translateX(${(index - currentIndex) * 100}%)`,
+                transform: `translateX(${(index - currentIndex) * 100 + (bgTranslateX / 400) * 100}%)`,
                 opacity: index === currentIndex ? 1 : 0,
-                pointerEvents: index === currentIndex ? "auto" : "none",
+                pointerEvents: index === currentIndex ? 'auto' : 'none',
                 zIndex: index === currentIndex ? 10 : 0,
               }}
             >
@@ -198,17 +191,15 @@ export default function MobileCarousel() {
         </div>
       </div>
 
-      {/* Icon Carousel */}
+      {/* --- Icon Carousel --- */}
       <div className="bg-black fixed inset-x-0 top-0 z-20 pointer-events-none">
         <div
-          className="relative z-20 overflow-visible cursor-grab active:cursor-grabbing select-none"
-          onMouseDown={startDrag}
-          onMouseMove={onDrag}
-          onMouseUp={endDrag}
-          onMouseLeave={endDrag}
-          onTouchStart={startDrag}
-          onTouchMove={onDrag}
-          onTouchEnd={endDrag}
+          className="relative z-20 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchMove={handleMouseMove}
+          onTouchEnd={handleMouseUp}
         >
           <div className="fixed h-34 inset-4 bg-none flex items-start justify-center overflow-x-hidden">
             {items.map((item, index) => (
@@ -219,7 +210,9 @@ export default function MobileCarousel() {
                 onClick={() => handleChangeSlide(index)}
               >
                 <div
-                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1 bg-black text-white shadow-md cursor-pointer`}
+                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1 bg-black text-white shadow-md cursor-pointer ${getSlideClass(
+                    index
+                  )}`}
                 >
                   <h1 className="text-white font-semibold text-xs">
                     {item.icon}
