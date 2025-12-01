@@ -29,10 +29,10 @@ export function LiveStream({ title = "Live Stream" }: LiveStreamProps) {
   useEffect(() => {
     async function fetchVideoUrl() {
       try {
-        const res = await fetch(openSheetUrl);
+        const res = await fetch("/api/live-stream");
         const data = await res.json();
 
-        const rawUrl = data?.[0]?.videoUrl;
+        const rawUrl = data?.url;
         if (rawUrl) {
           setVideoUrl(getEmbedUrl(rawUrl));
         }

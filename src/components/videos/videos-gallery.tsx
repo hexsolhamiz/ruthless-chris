@@ -1,10 +1,36 @@
 "use client"
 
 import { videos } from "@/data/videos"
+import { useEffect, useState } from "react"
 
-
-
+interface VideoItem {
+  url : string;
+  id : number;
+}
 export function VideosGallery() {
+
+  const [videos,setVideos] = useState<VideoItem[]>([]);
+   
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const response = await fetch("/api/videos");
+        if (response.ok) {
+          const data = await response.json();
+          setVideos(data);
+        } else {
+          console.error("Failed to fetch videos");
+        }
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+      }
+    }
+    fetchVideos();
+  }, []);
+  
+  
+
   return (
     <section className="min-h-screen bg-black py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -15,16 +41,16 @@ export function VideosGallery() {
 
         {/* Video Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {videos.map((video) => (
-            <div key={video.id} className="space-y-3">
+          {videos.length > 0 && videos.map((video,index) => (
+            <div key={index} className="space-y-3">
               <div className="aspect-video rounded-lg overflow-hidden bg-muted">
                 <iframe
-                  src={`https://www.youtube.com/embed/${video.link}`}
+                  src={`${video.url}`}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+                  
                   className="w-full h-full"
                 />
-              </div>
+              </div>allowFullScreen
 
             </div>
           ))}

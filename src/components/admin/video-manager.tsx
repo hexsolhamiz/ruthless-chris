@@ -7,54 +7,37 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-
-interface VideoItem {
-  id: string
-  title: string
-  url: string
-  addedAt: Date
-}
+import { toast } from "sonner"
 
 export function VideoManager() {
-  const [videos, setVideos] = useState<VideoItem[]>([
-    {
-      id: "1",
-      title: "Introduction Video",
-      url: "https://youtube.com/watch?v=example1",
-      addedAt: new Date("2024-01-15"),
-    },
-    {
-      id: "2",
-      title: "Tutorial Part 1",
-      url: "https://youtube.com/watch?v=example2",
-      addedAt: new Date("2024-01-20"),
-    },
-    {
-      id: "3",
-      title: "Behind the Scenes",
-      url: "https://youtube.com/watch?v=example3",
-      addedAt: new Date("2024-02-01"),
-    },
-  ])
 
-  const [newTitle, setNewTitle] = useState("")
   const [newUrl, setNewUrl] = useState("")
   const [saved, setSaved] = useState(false)
+  const [loading,setLoading] = useState(false); 
 
-  const handleAddVideo = () => {
-    if (newTitle.trim() && newUrl.trim()) {
-      const newVideo: VideoItem = {
-        id: Date.now().toString(),
-        title: newTitle,
-        url: newUrl,
-        addedAt: new Date(),
-      }
-      setVideos([newVideo, ...videos])
-      setNewTitle("")
-      setNewUrl("")
-      setSaved(true)
-      setTimeout(() => setSaved(false), 3000)
+  const handleAddVideo = async () => {
+    setLoading(true);
+    if (newUrl.trim()) {     
+      const response = await fetch("/api/videos", {   
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: newUrl }),
+      });
+
+      if (!response.ok) {
+      toast.error("Failed to add video.");
+      setLoading(false);
+      return;
+      } else {
+        toast.success("Video added successfully!");
+        setSaved(true);
+        setNewUrl("");
+        setTimeout(() => setSaved(false), 3000);
+        setLoading(false);
     }
+}
   }
   return (
     <div className="space-y-6">
@@ -81,7 +64,7 @@ export function VideoManager() {
             </div>
           </div>
 
-          <Button onClick={handleAddVideo} className="flex items-center gap-2">
+          <Button onClick={handleAddVideo} disabled={loading} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             Add Video
           </Button>

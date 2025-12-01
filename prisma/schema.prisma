@@ -24,6 +24,7 @@ model videos {
 }
 
 model liveStream {
+  id       Int      @id @default(autoincrement())
   url       String   @unique
   createdAt DateTime @default(now())
 }

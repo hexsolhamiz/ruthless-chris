@@ -7,24 +7,30 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Radio, Save, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { toast } from "sonner"
 
 export function LiveStreamManager() {
   const [liveLink, setLiveLink] = useState("")
-  const [isLive, setIsLive] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (liveLink.trim()) {
-      setIsLive(true)
-      setSaved(true)
-      setTimeout(() => setSaved(false), 3000)
+     const resposne = await fetch("/api/live-stream", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url: liveLink }),
+      });
+      if (resposne.ok) {
+        toast.success("Live stream link updated successfully!");
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
     }
   }
 
-  const handleGoOffline = () => {
-    setIsLive(false)
-    setLiveLink("")
-  }
+ 
 
   return (
     <div className="space-y-6">
@@ -53,11 +59,7 @@ export function LiveStreamManager() {
               <Save className="h-4 w-4" />
               Save Live Link
             </Button>
-            {isLive && (
-              <Button variant="destructive" onClick={handleGoOffline}>
-                Go Offline
-              </Button>
-            )}
+      
           </div>
 
           {saved && (
