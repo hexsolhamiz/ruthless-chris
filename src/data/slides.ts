@@ -1,7 +1,7 @@
 import React from "react";
-import { Home, Radio, Music2, Contact, Calendar, Croissant, NotebookTabs } from "lucide-react";
+import { Home, Radio, Music2, Contact, Calendar, Croissant } from "lucide-react";
 import { SlideOne, SlideTwo, SlideThree, SlideFour, SlideFive, SlideSix } from "../components/mobile/index";
-import { SlideSeven } from "@/components/mobile/slide-seven";
+// import { SlideSeven } from "@/components/mobile/slide-seven";
 
 export const items = [
     {
