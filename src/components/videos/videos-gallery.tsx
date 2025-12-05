@@ -1,6 +1,5 @@
 "use client"
 
-import { videos } from "@/data/videos"
 import { useEffect, useState } from "react"
 
 interface VideoItem {
