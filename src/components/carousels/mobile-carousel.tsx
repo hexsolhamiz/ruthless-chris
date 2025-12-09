@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { items } from "@/data/slides";
 
 export default function MobileCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(8);
   const [prevIndex, setPrevIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
