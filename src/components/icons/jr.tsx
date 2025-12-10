@@ -3,7 +3,7 @@ import React from 'react'
 
 export const JR = () => {
     return (
-        <div className='relative w-20 h-20 rounded-full'>
+        <div className='relative overflow-hidden w-15 h-15 rounded-full'>
             <Image
                 src="/icons/jr-icon.png"
                 alt='jr'
