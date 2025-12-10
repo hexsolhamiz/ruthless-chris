@@ -210,11 +210,11 @@ export default function MobileCarousel() {
                 onClick={() => handleChangeSlide(index)}
               >
                 <div
-                  className={`w-16 h-16 flex items-center justify-center rounded-full border-white border-1 bg-black text-white shadow-md cursor-pointer ${getSlideClass(
+                  className={`w-16 h-16 flex  overflow-hidden items-center justify-center rounded-full border-white border-1 bg-black text-white shadow-md cursor-pointer ${getSlideClass(
                     index
                   )}`}
                 >
-                  <h1 className="text-white font-semibold text-xs">
+                  <h1 className="text-white  overflow-hidden font-semibold text-xs">
                     {item.icon}
                   </h1>
                 </div>
