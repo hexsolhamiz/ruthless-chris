@@ -9,25 +9,14 @@ export async function proxy(req: NextRequest) {
   const isAdminPath = pathname.startsWith("/admin");
   const isLoginPath = pathname.startsWith("/login");
 
-  // Unauthenticated users 
   if (!token) {
     if (isAdminPath) {
-      return NextResponse.redirect(new URL("/", req.url));
+      return NextResponse.redirect(new URL("/login", req.url));
     }
-
     return NextResponse.next();
   }
 
-  // Authenticated users
-
   if (isLoginPath) {
-    if (token) {
-      return NextResponse.redirect(new URL("/admin", req.url));
-    }
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  if (token) {
     return NextResponse.redirect(new URL("/admin", req.url));
   }
 
@@ -35,9 +24,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/",
-    "/login",
-    "/admin/:path*"
-  ],
+  matcher: ["/", "/login", "/admin/:path*"],
 };
