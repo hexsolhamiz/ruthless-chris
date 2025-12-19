@@ -1,13 +1,13 @@
 import React from "react";
 import { SebBanner } from "../banners/seb-banner";
-import { VideosGallery } from "../videos/videos-gallery";
+import { SebVideosGallery } from "../videos/seb-videos-gallery";
 
 export const SlideEight = () => {
 
   return (
     <div className="min-w-full flex flex-col items-center justify-center">
       <SebBanner />
-     <VideosGallery />
+      <SebVideosGallery />
     </div>
   );
 };
