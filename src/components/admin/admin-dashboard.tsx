@@ -3,10 +3,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LiveStreamManager } from "./live-stream-manager";
 import { VideoManager } from "./video-manager";
-import { Radio, Video, Settings, LogOut, Calendar } from "lucide-react";
+import { ScheduleManager } from "./schedule-manager";
+import { ImageManager } from "./image-manager";
+import { Radio, Video, Calendar, Image, Settings, LogOut, ImageIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
-import { ScheduleManager } from "./schedule-manager";
 
 export function AdminDashboard() {
   const [loading, setLoading] = useState(false);
@@ -29,18 +30,18 @@ export function AdminDashboard() {
           <h1 className="text-3xl font-bold text-white">Admin Panel</h1>
         </div>
         <p className="text-white text-center">
-          Manage your live stream and video content
+          Manage your live stream, video content, schedules, and images
         </p>
       </div>
 
-      <Tabs defaultValue="live" className="w-full flex justify-center">
-        <TabsList className="grid w-full grid-cols-3 mb-8">
+      <Tabs defaultValue="live" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 mb-8">
           <TabsTrigger
             value="live"
             className="flex items-center gap-2 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
           >
             <Radio className="h-4 w-4" />
-            Live Stream
+            <span className="hidden sm:inline">Live Stream</span>
           </TabsTrigger>
 
           <TabsTrigger
@@ -48,14 +49,23 @@ export function AdminDashboard() {
             className="flex items-center gap-2 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
           >
             <Video className="h-4 w-4" />
-            Videos
+            <span className="hidden sm:inline">Videos</span>
           </TabsTrigger>
+
           <TabsTrigger
             value="schedule"
             className="flex items-center gap-2 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
           >
             <Calendar className="h-4 w-4" />
-            Schedule
+            <span className="hidden sm:inline">Schedule</span>
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="images"
+            className="flex items-center gap-2 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
+          >
+            <ImageIcon className="h-4 w-4" />
+            <span className="hidden sm:inline">Images</span>
           </TabsTrigger>
         </TabsList>
 
@@ -66,8 +76,13 @@ export function AdminDashboard() {
         <TabsContent value="videos">
           <VideoManager />
         </TabsContent>
+
         <TabsContent value="schedule">
           <ScheduleManager />
+        </TabsContent>
+
+        <TabsContent value="images">
+          <ImageManager />
         </TabsContent>
       </Tabs>
 
