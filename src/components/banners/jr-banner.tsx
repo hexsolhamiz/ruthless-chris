@@ -12,7 +12,7 @@ export const JrBanner = () => {
           width={400}
           height={400}
           alt="Logo"
-          className="lg:h-[400px] lg:w-[400px] h-[160px] w-[200px] animation-pulse"
+          className="lg:h-[400px] lg:w-[400px] h-[120px] w-[250px] animation-pulse"
         />
       </div>
     </div>

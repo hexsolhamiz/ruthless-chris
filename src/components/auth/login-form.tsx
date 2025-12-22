@@ -21,11 +21,9 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 const LoginForm = () => {
-  // states initialization
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  // zod implementation
+ 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -47,7 +45,7 @@ const LoginForm = () => {
       toast("Incorrect username or password");
     }
     if (result?.ok) {
-      toast("login succesfull")
+      toast.success("Login succesfull")
       router.push("/admin");
     }
     } catch (error) {
@@ -57,6 +55,7 @@ const LoginForm = () => {
       setLoading(false)
     }
   };
+
   return (
       <div className="flex justify-center items-center min-h-screen bg-black">
         <div className="w-full max-w-md p-8 space-y-8 bg-black rounded-lg shadow-md">
@@ -121,7 +120,6 @@ const LoginForm = () => {
             </form>
           </Form>
           </div>
-          
         </div>
       </div>
     
