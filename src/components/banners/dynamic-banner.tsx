@@ -13,8 +13,6 @@ type ImageData = {
 export const DynamicBanner = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
   useEffect(() => {
     const fetchBannerImage = async () => {
       try {
@@ -28,11 +26,8 @@ export const DynamicBanner = () => {
         const data: ImageData = await response.json();
         console.log('Fetched banner image:', data);
         setImageUrl(data.url);
-        setError(false);
       } catch (err) {
         console.error('Error fetching banner image:', err);
-        setError(true);
-        // Fallback to default image
         setImageUrl('https://res.cloudinary.com/dkgcww59b/image/upload/v1766416370/seb_zpixtd.png');
       } finally {
         setLoading(false);
@@ -58,11 +53,6 @@ export const DynamicBanner = () => {
           />
         )}
       </div>
-      {/* {error && (
-        <p className="text-center text-red-400 text-sm mt-2">
-          Failed to load banner image, showing default
-        </p>
-      )} */}
     </div>
   );
 };

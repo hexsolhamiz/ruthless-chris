@@ -5,7 +5,7 @@ import { LiveStreamManager } from "./live-stream-manager";
 import { VideoManager } from "./video-manager";
 import { ScheduleManager } from "./schedule-manager";
 import { ImageManager } from "./image-manager";
-import { Radio, Video, Calendar, Image, Settings, LogOut, ImageIcon } from "lucide-react";
+import { Radio, Video, Calendar, Settings, LogOut, ImageIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 
