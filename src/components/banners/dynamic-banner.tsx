@@ -13,6 +13,7 @@ type ImageData = {
 export const DynamicBanner = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     const fetchBannerImage = async () => {
       try {
