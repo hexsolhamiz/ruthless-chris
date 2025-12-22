@@ -12,7 +12,7 @@ export const SebBanner = () => {
           width={400}
           height={400}
           alt="Logo"
-          className="lg:h-[400px] lg:w-[400px] h-[200px] w-[250px] animation-pulse"
+          className="lg:h-[400px] lg:w-[400px] animation-pulse"
         />
       </div>
     </div>
