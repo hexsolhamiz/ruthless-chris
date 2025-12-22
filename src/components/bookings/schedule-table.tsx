@@ -1,32 +1,62 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
 type Row = {
+  id: number
   day: string
-  names: string
+  venue: string
   time: string
-  streaming: string
-}
-
-const rows: Row[] = [
-  { day: "Monday", names: "Ava Chen, Liam Patel", time: "8:00 AM", streaming: "YouTube" },
-  { day: "Tuesday", names: "Noah Singh", time: "12:30 PM", streaming: "Twitch" },
-  { day: "Wednesday", names: "Sofia Garcia, Eli Park", time: "6:00 PM", streaming: "Netflix" },
-  { day: "Thursday", names: "Maya Lewis", time: "9:00 AM", streaming: "Hulu" },
-  { day: "Friday", names: "Oliver Kim", time: "4:00 PM", streaming: "Disney+" },
-  { day: "Saturday", names: "Zoe Nguyen, Theo Brooks", time: "10:00 AM", streaming: "Prime Video" },
-  { day: "Sunday", names: "Isa Lopez", time: "2:00 PM", streaming: "Apple TV+" },
-]
-
-function StreamingPill({ label }: { label: string }) {
-  return (
-    <span
-      className="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground"
-      aria-label={`Streaming platform: ${label}`}
-    >
-      {label}
-    </span>
-  )
 }
 
 export default function ScheduleTable() {
+  const [rows, setRows] = useState<Row[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchSchedule() {
+      try {
+        const response = await fetch('/api/schedule')
+        if (!response.ok) {
+          throw new Error('Failed to fetch schedule')
+        }
+        const data = await response.json()
+        setRows(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSchedule()
+  }, [])
+
+  if (loading) {
+    return (
+      <section aria-labelledby="schedule-title" className="w-full bg-blue-950">
+        <div className="bg-blue-950 rounded-lg border text-card-foreground shadow-sm">
+          <div className="p-4 md:p-6 text-center text-white">
+            Loading schedule...
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section aria-labelledby="schedule-title" className="w-full bg-blue-950">
+        <div className="bg-blue-950 rounded-lg border text-card-foreground shadow-sm">
+          <div className="p-4 md:p-6 text-center text-red-400">
+            Error: {error}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section aria-labelledby="schedule-title" className="w-full bg-blue-950">
       <div className="bg-blue-950 rounded-lg border text-card-foreground shadow-sm">
@@ -46,36 +76,30 @@ export default function ScheduleTable() {
                   Day
                 </th>
                 <th scope="col" className="px-4 py-3 font-medium text-foreground md:px-6">
-                  Names
+                  Venues
                 </th>
                 <th scope="col" className="px-4 py-3 font-medium text-foreground md:px-6">
                   Time
                 </th>
-                <th scope="col" className="px-4 py-3 font-medium text-foreground md:px-6">
-                  Streaming
-                </th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((r, i) => (
-                <tr key={`${r.day}-${i}`} className="border-t hover:bg-accent/40">
+              {rows.map((r) => (
+                <tr key={r.id} className="border-t hover:bg-accent/40">
                   <th scope="row" className="px-4 py-3 font-medium md:px-6">
                     {r.day}
                   </th>
-                  <td className="px-4 py-3 md:px-6">{r.names}</td>
+                  <td className="px-4 py-3 md:px-6">{r.venue}</td>
                   <td className="px-4 py-3 md:px-6">
                     <span className="whitespace-nowrap">{r.time}</span>
-                  </td>
-                  <td className="px-4 py-3 md:px-6">
-                    <StreamingPill label={r.streaming} />
                   </td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="border-t bg-muted/30">
               <tr>
-                <td colSpan={4} className="px-4 py-3 text-right text-xs text-white md:px-6">
-                  7 entries • Updated just now
+                <td colSpan={3} className="px-4 py-3 text-right text-xs text-white md:px-6">
+                  {rows.length} entries • Updated just now
                 </td>
               </tr>
             </tfoot>

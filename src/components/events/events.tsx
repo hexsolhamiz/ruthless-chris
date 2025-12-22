@@ -49,7 +49,8 @@ export const Events = () => {
             ))}
           </div>
         </div>
-        {/* <div className="md:hidden z-50 px-4">
+        {/* 
+        <div className="md:hidden z-50 px-4">
           <Carousel
             opts={{
               align: "end",
@@ -57,7 +58,6 @@ export const Events = () => {
             orientation="vertical"
             className="w-full mt-12 max-w-xs"
           >
-          
             <CarouselContent className="mt-4 h-[400px]">
               {events.map((event, index) => (
                 <CarouselItem key={index} className="pt-1 md:basis-1/2">
@@ -73,9 +73,8 @@ export const Events = () => {
               ))}
             </CarouselContent>
           </Carousel>
-        </div> */}
-
-
+        </div>
+         */}
         <div>
 
         </div>

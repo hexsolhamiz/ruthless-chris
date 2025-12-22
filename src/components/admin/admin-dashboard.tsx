@@ -3,9 +3,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LiveStreamManager } from "./live-stream-manager";
 import { VideoManager } from "./video-manager";
-import { Radio, Video, Settings, LogOut } from "lucide-react";
+import { Radio, Video, Settings, LogOut, Calendar } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
+import { ScheduleManager } from "./schedule-manager";
 
 export function AdminDashboard() {
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="live" className="w-full flex justify-center">
-        <TabsList className="grid w-full grid-cols-2 mb-8">
+        <TabsList className="grid w-full grid-cols-3 mb-8">
           <TabsTrigger
             value="live"
             className="flex items-center gap-2 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
@@ -49,6 +50,13 @@ export function AdminDashboard() {
             <Video className="h-4 w-4" />
             Videos
           </TabsTrigger>
+          <TabsTrigger
+            value="schedule"
+            className="flex items-center gap-2 data-[state=active]:text-blue-600 data-[state=active]:border-b-2 data-[state=active]:border-blue-600"
+          >
+            <Calendar className="h-4 w-4" />
+            Schedule
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="live">
@@ -57,6 +65,9 @@ export function AdminDashboard() {
 
         <TabsContent value="videos">
           <VideoManager />
+        </TabsContent>
+        <TabsContent value="schedule">
+          <ScheduleManager />
         </TabsContent>
       </Tabs>
 

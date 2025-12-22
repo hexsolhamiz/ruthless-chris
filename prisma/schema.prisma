@@ -30,3 +30,12 @@ model liveStream {
 }
 
 
+model Schedule {
+  id        Int      @id @default(autoincrement())
+  day       String
+  venue     String
+  time      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("schedule")
+}
