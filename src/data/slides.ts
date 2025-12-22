@@ -122,49 +122,4 @@ export const items = [
       content: React.createElement(SlideNine),
       text: "Bookings",
     },
-
-
-
-    {
-      icon: React.createElement(Music2, { size: 28 }),
-      color: "bg-red-500",
-      bgImage: "/slides/slide3.png",
-      content: React.createElement(SlideThree),
-      text: "Videos",
-    },
-    {
-      icon: React.createElement(Contact, { size: 28 }),
-      color: "bg-yellow-500",
-      bgImage: "/slides/slide4.png",
-      content: React.createElement(SlideFour),
-      text: "Contact",
-    },
-    {
-      icon: React.createElement(Calendar, { size: 28 }),
-      color: "bg-red-500",
-      bgImage: "/slides/slide3.png",
-      content: React.createElement(SlideFive),
-      text: "Events",
-    },
-    {
-      icon: React.createElement(Croissant, { size: 28 }),
-      color: "bg-blue-500",
-      bgImage: "/slides/slide1.png",
-      content: React.createElement(SlideSix),
-      text: "Bookings",
-    },
-    {
-      icon: React.createElement(Seb, { size: 28 }),
-      color: "bg-blue-500",
-      bgImage: "/slides/slide1.png",
-      content: React.createElement(SlideEight),
-      text: "Bookings",
-    },
-    {
-      icon: React.createElement(JR, { size: 28 }),
-      color: "bg-blue-500",
-      bgImage: "/slides/slide1.png",
-      content: React.createElement(SlideNine),
-      text: "Bookings",
-    },
   ];
