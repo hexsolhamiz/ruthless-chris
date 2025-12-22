@@ -53,7 +53,7 @@ export const DynamicBanner = () => {
             alt="banner logo"
             height={150}
             width={150}
-            className='object-contain w-[337px] h-[402px]' 
+            className='object-contain' 
             priority
           />
         )}
