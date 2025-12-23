@@ -185,7 +185,7 @@ export default function MobileCarousel() {
                 zIndex: index === currentIndex ? 10 : 0,
               }}
             >
-              {item.content}
+              {typeof item.content === 'function' ? item.content() : item.content}
             </div>
           ))}
         </div>
