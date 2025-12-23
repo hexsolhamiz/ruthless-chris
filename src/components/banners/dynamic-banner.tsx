@@ -25,7 +25,6 @@ export const DynamicBanner = () => {
         }
         
         const data: ImageData = await response.json();
-        console.log('Fetched banner image:', data);
         setImageUrl(data.url);
       } catch (err) {
         console.error('Error fetching banner image:', err);
