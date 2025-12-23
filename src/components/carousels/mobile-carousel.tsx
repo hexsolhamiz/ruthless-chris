@@ -16,7 +16,6 @@ export default function MobileCarousel() {
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Reset scroll to top when slide changes
   useEffect(() => {
     const currentItem = itemRefs.current[currentIndex];
     if (currentItem) {
@@ -27,7 +26,6 @@ export default function MobileCarousel() {
 
   const slideWidth = 85;
 
-  // --- Icon Carousel Handlers ---
   const handleMouseDown = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
   ) => {
@@ -66,7 +64,6 @@ export default function MobileCarousel() {
     setStartX(0);
   };
 
-  // --- Background Carousel Handlers ---
   const handleBgMouseDown = (
     e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
   ) => {
@@ -104,14 +101,11 @@ export default function MobileCarousel() {
     setBgTranslateX(0);
     setBgStartX(0);
   };
-
-  // --- Change slide + update indices ---
   const handleChangeSlide = (newIndex: number) => {
     setPrevIndex(currentIndex);
     setCurrentIndex(newIndex);
   };
 
-  // --- Style helpers ---
   const getSlideClass = (index: number) => {
     if (index === currentIndex) {
       return "z-20 scale-100 translate-y-1 opacity-100 shadow-xl transition-all duration-300";
@@ -160,7 +154,6 @@ export default function MobileCarousel() {
 
   return (
     <div className="w-full max-w-md mx-auto relative min-h-screen">
-      {/* --- Background Content Carousel --- */}
       <div
         ref={containerRef}
         className="relative z-10 h-full overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
@@ -191,7 +184,6 @@ export default function MobileCarousel() {
         </div>
       </div>
 
-      {/* --- Icon Carousel --- */}
       <div className="bg-black fixed inset-x-0 top-0 z-20 pointer-events-none">
         <div
           className="relative z-20 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
