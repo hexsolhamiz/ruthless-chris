@@ -1,9 +1,50 @@
 "use client";
-
 import React, { useEffect, useRef, useState } from "react";
 import { items } from "@/data/slides";
 
-export default function MobileCarousel() {
+// Error Boundary to prevent crashes
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Carousel component error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex items-center justify-center h-full p-4">
+          <div className="text-center">
+            <p className="text-red-500 mb-2">Something went wrong</p>
+            <button 
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                window.location.reload();
+              }}
+              className="px-4 py-2 bg-blue-500 text-white rounded"
+            >
+              Reload
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+function MobileCarouselInner() {
   const [currentIndex, setCurrentIndex] = useState(8);
   const [prevIndex, setPrevIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -15,28 +56,54 @@ export default function MobileCarousel() {
 
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Use refs to store latest values for event handlers
+  const stateRef = useRef({
+    isDragging: false,
+    startX: 0,
+    translateX: 0,
+    bgIsDragging: false,
+    bgStartX: 0,
+    bgTranslateX: 0,
+    currentIndex: 8,
+  });
+
+  // Keep stateRef in sync with state
+  useEffect(() => {
+    stateRef.current = {
+      isDragging,
+      startX,
+      translateX,
+      bgIsDragging,
+      bgStartX,
+      bgTranslateX,
+      currentIndex,
+    };
+  }, [isDragging, startX, translateX, bgIsDragging, bgStartX, bgTranslateX, currentIndex]);
+
+  const slideWidth = 85;
+
+  // Cleanup function for refs
+  useEffect(() => {
+    return () => {
+      itemRefs.current = [];
+    };
+  }, []);
 
   useEffect(() => {
     const currentItem = itemRefs.current[currentIndex];
     if (currentItem) {
-      // Force scroll to top immediately
       currentItem.scrollTop = 0;
     }
   }, [currentIndex]);
 
-  const slideWidth = 85;
-
-  const handleMouseDown = (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-  ) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     setIsDragging(true);
     const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
     setStartX(clientX);
   };
 
-  const handleMouseMove = (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-  ) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
     const deltaX = clientX - startX;
@@ -45,36 +112,28 @@ export default function MobileCarousel() {
 
   const handleMouseUp = () => {
     if (!isDragging) return;
-
     const threshold = slideWidth / 3;
     let nextIndex = currentIndex;
-
     if (translateX > threshold) {
       nextIndex = (currentIndex - 1 + items.length) % items.length;
     } else if (translateX < -threshold) {
       nextIndex = (currentIndex + 1) % items.length;
     }
-
     if (nextIndex !== currentIndex) {
       handleChangeSlide(nextIndex);
     }
-
     setIsDragging(false);
     setTranslateX(0);
     setStartX(0);
   };
 
-  const handleBgMouseDown = (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-  ) => {
+  const handleBgMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     setBgIsDragging(true);
     const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
     setBgStartX(clientX);
   };
 
-  const handleBgMouseMove = (
-    e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
-  ) => {
+  const handleBgMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     if (!bgIsDragging) return;
     const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
     const deltaX = clientX - bgStartX;
@@ -83,30 +142,27 @@ export default function MobileCarousel() {
 
   const handleBgMouseUp = () => {
     if (!bgIsDragging) return;
-
     const threshold = 100;
     let nextIndex = currentIndex;
-
     if (bgTranslateX > threshold && currentIndex > 0) {
       nextIndex = currentIndex - 1;
     } else if (bgTranslateX < -threshold && currentIndex < items.length - 1) {
       nextIndex = currentIndex + 1;
     }
-
     if (nextIndex !== currentIndex) {
       handleChangeSlide(nextIndex);
     }
-
     setBgIsDragging(false);
     setBgTranslateX(0);
     setBgStartX(0);
   };
+
   const handleChangeSlide = (newIndex: number) => {
     setPrevIndex(currentIndex);
     setCurrentIndex(newIndex);
   };
 
-  const getSlideClass = (index: number) => {
+  const getSlideClass = (index: number): string => {
     if (index === currentIndex) {
       return "z-20 scale-100 translate-y-1 opacity-100 shadow-xl transition-all duration-300";
     }
@@ -116,7 +172,7 @@ export default function MobileCarousel() {
     return "z-0 scale-90 opacity-90 translate-y-0 transition-all duration-300";
   };
 
-  const getSlideStyle = (index: number) => {
+  const getSlideStyle = (index: number): React.CSSProperties => {
     let distance = index - currentIndex;
     if (distance > items.length / 2) distance -= items.length;
     if (distance < -items.length / 2) distance += items.length;
@@ -132,7 +188,6 @@ export default function MobileCarousel() {
         transition: "all 0.3s ease",
       };
     }
-
     if (Math.abs(distance) === 1) {
       return {
         transform: `translateX(${baseTranslateX}px) translateY(-1px) scale(1)`,
@@ -142,7 +197,6 @@ export default function MobileCarousel() {
         transition: "all 0.3s ease",
       };
     }
-
     return {
       transform: `translateX(${baseTranslateX}px) translateY(-3px) scale(0.8)`,
       zIndex: 1,
@@ -152,48 +206,129 @@ export default function MobileCarousel() {
     };
   };
 
+  // Add global event listeners with proper cleanup - FIX FOR MEMORY LEAKS
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent | TouchEvent) => {
+      const state = stateRef.current;
+      
+      if (state.isDragging) {
+        const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0]?.clientX || 0;
+        const deltaX = clientX - state.startX;
+        setTranslateX(deltaX);
+      }
+    };
+
+    const handleGlobalMouseUp = () => {
+      const state = stateRef.current;
+      
+      if (state.isDragging) {
+        const threshold = slideWidth / 3;
+        let nextIndex = state.currentIndex;
+        
+        if (state.translateX > threshold) {
+          nextIndex = (state.currentIndex - 1 + items.length) % items.length;
+        } else if (state.translateX < -threshold) {
+          nextIndex = (state.currentIndex + 1) % items.length;
+        }
+        
+        if (nextIndex !== state.currentIndex) {
+          setPrevIndex(state.currentIndex);
+          setCurrentIndex(nextIndex);
+        }
+        
+        setIsDragging(false);
+        setTranslateX(0);
+        setStartX(0);
+      }
+    };
+
+    const handleGlobalBgMouseMove = (e: MouseEvent | TouchEvent) => {
+      const state = stateRef.current;
+      
+      if (state.bgIsDragging) {
+        const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0]?.clientX || 0;
+        const deltaX = clientX - state.bgStartX;
+        setBgTranslateX(deltaX);
+      }
+    };
+
+    const handleGlobalBgMouseUp = () => {
+      const state = stateRef.current;
+      
+      if (state.bgIsDragging) {
+        const threshold = 100;
+        let nextIndex = state.currentIndex;
+        
+        if (state.bgTranslateX > threshold && state.currentIndex > 0) {
+          nextIndex = state.currentIndex - 1;
+        } else if (state.bgTranslateX < -threshold && state.currentIndex < items.length - 1) {
+          nextIndex = state.currentIndex + 1;
+        }
+        
+        if (nextIndex !== state.currentIndex) {
+          setPrevIndex(state.currentIndex);
+          setCurrentIndex(nextIndex);
+        }
+        
+        setBgIsDragging(false);
+        setBgTranslateX(0);
+        setBgStartX(0);
+      }
+    };
+
+    // Add all event listeners
+    document.addEventListener("mousemove", handleGlobalMouseMove);
+    document.addEventListener("mouseup", handleGlobalMouseUp);
+    document.addEventListener("touchmove", handleGlobalMouseMove, { passive: false });
+    document.addEventListener("touchend", handleGlobalMouseUp);
+    document.addEventListener("mousemove", handleGlobalBgMouseMove);
+    document.addEventListener("mouseup", handleGlobalBgMouseUp);
+    document.addEventListener("touchmove", handleGlobalBgMouseMove, { passive: false });
+    document.addEventListener("touchend", handleGlobalBgMouseUp);
+
+    // CRITICAL: Cleanup event listeners to prevent memory leaks
+    return () => {
+      document.removeEventListener("mousemove", handleGlobalMouseMove);
+      document.removeEventListener("mouseup", handleGlobalMouseUp);
+      document.removeEventListener("touchmove", handleGlobalMouseMove);
+      document.removeEventListener("touchend", handleGlobalMouseUp);
+      document.removeEventListener("mousemove", handleGlobalBgMouseMove);
+      document.removeEventListener("mouseup", handleGlobalBgMouseUp);
+      document.removeEventListener("touchmove", handleGlobalBgMouseMove);
+      document.removeEventListener("touchend", handleGlobalBgMouseUp);
+    };
+  }, []); // Empty dependency array - handlers use stateRef instead
+
   return (
-    <div className="w-full max-w-md mx-auto relative min-h-screen">
+    <div className="relative w-full h-screen overflow-hidden">
       <div
         ref={containerRef}
-        className="relative z-10 h-full overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
-        onMouseUp={handleBgMouseUp}
-        onMouseLeave={handleBgMouseUp}
+        className="absolute top-0 left-0 w-full h-full"
+        onMouseDown={handleBgMouseDown}
         onTouchStart={handleBgMouseDown}
-        onTouchMove={handleBgMouseMove}
-        onTouchEnd={handleBgMouseUp}
       >
-        <div className="relative w-full min-h-screen overflow-x-hidden">
-          {items.map((item, index) => (
-            <div
-              key={index}
-              ref={(el) => {
-                itemRefs.current[index] = el;
-              }}
-              className="absolute top-0 left-0 w-full h-full overflow-y-auto transition-all duration-300"
-              style={{
-                transform: `translateX(${(index - currentIndex) * 100 + (bgTranslateX / 400) * 100}%)`,
-                opacity: index === currentIndex ? 1 : 0,
-                pointerEvents: index === currentIndex ? 'auto' : 'none',
-                zIndex: index === currentIndex ? 10 : 0,
-              }}
-            >
+        {items.map((item, index) => (
+          <div
+            key={index}
+            ref={(el) => {
+              itemRefs.current[index] = el;
+            }}
+            className="absolute top-0 left-0 w-full h-full overflow-y-auto transition-all duration-300"
+            style={{
+              transform: `translateX(${(index - currentIndex) * 100 + (bgTranslateX / 400) * 100}%)`,
+              opacity: index === currentIndex ? 1 : 0,
+              pointerEvents: index === currentIndex ? 'auto' : 'none',
+              zIndex: index === currentIndex ? 10 : 0,
+            }}
+          >
+            <ErrorBoundary>
               {typeof item.content === 'function' ? item.content() : item.content}
-            </div>
-          ))}
-        </div>
+            </ErrorBoundary>
+          </div>
+        ))}
       </div>
 
-      <div className="bg-black fixed inset-x-0 top-0 z-20 pointer-events-none">
-        <div
-          className="relative z-20 overflow-visible cursor-grab active:cursor-grabbing select-none pointer-events-auto"
-          onMouseDown={handleMouseDown}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleMouseDown}
-          onTouchMove={handleMouseMove}
-          onTouchEnd={handleMouseUp}
-        >
-          <div className="fixed h-34 inset-4 bg-none flex items-start justify-center overflow-x-hidden">
+       <div className="fixed z-50 h-34 inset-4 bg-none flex items-start justify-center overflow-x-hidden">
             {items.map((item, index) => (
               <div
                 key={index}
@@ -213,8 +348,14 @@ export default function MobileCarousel() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
     </div>
+  );
+}
+
+export default function MobileCarousel() {
+  return (
+    <ErrorBoundary>
+      <MobileCarouselInner />
+    </ErrorBoundary>
   );
 }
