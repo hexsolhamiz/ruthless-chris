@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { items } from "@/data/slides";
 
-// Error Boundary to prevent crashes
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
   { hasError: boolean; error: Error | null }
@@ -57,7 +56,6 @@ function MobileCarouselInner() {
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Use refs to store latest values for event handlers
   const stateRef = useRef({
     isDragging: false,
     startX: 0,
@@ -68,7 +66,6 @@ function MobileCarouselInner() {
     currentIndex: 8,
   });
 
-  // Keep stateRef in sync with state
   useEffect(() => {
     stateRef.current = {
       isDragging,
@@ -97,35 +94,35 @@ function MobileCarouselInner() {
     }
   }, [currentIndex]);
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    setIsDragging(true);
-    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
-    setStartX(clientX);
-  };
+  // const handleMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+  //   setIsDragging(true);
+  //   const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
+  //   setStartX(clientX);
+  // };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
-    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
-    const deltaX = clientX - startX;
-    setTranslateX(deltaX);
-  };
+  // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+  //   if (!isDragging) return;
+  //   const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
+  //   const deltaX = clientX - startX;
+  //   setTranslateX(deltaX);
+  // };
 
-  const handleMouseUp = () => {
-    if (!isDragging) return;
-    const threshold = slideWidth / 3;
-    let nextIndex = currentIndex;
-    if (translateX > threshold) {
-      nextIndex = (currentIndex - 1 + items.length) % items.length;
-    } else if (translateX < -threshold) {
-      nextIndex = (currentIndex + 1) % items.length;
-    }
-    if (nextIndex !== currentIndex) {
-      handleChangeSlide(nextIndex);
-    }
-    setIsDragging(false);
-    setTranslateX(0);
-    setStartX(0);
-  };
+  // const handleMouseUp = () => {
+  //   if (!isDragging) return;
+  //   const threshold = slideWidth / 3;
+  //   let nextIndex = currentIndex;
+  //   if (translateX > threshold) {
+  //     nextIndex = (currentIndex - 1 + items.length) % items.length;
+  //   } else if (translateX < -threshold) {
+  //     nextIndex = (currentIndex + 1) % items.length;
+  //   }
+  //   if (nextIndex !== currentIndex) {
+  //     handleChangeSlide(nextIndex);
+  //   }
+  //   setIsDragging(false);
+  //   setTranslateX(0);
+  //   setStartX(0);
+  // };
 
   const handleBgMouseDown = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     setBgIsDragging(true);
@@ -133,29 +130,29 @@ function MobileCarouselInner() {
     setBgStartX(clientX);
   };
 
-  const handleBgMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    if (!bgIsDragging) return;
-    const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
-    const deltaX = clientX - bgStartX;
-    setBgTranslateX(deltaX);
-  };
+  // const handleBgMouseMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+  //   if (!bgIsDragging) return;
+  //   const clientX = "clientX" in e ? e.clientX : e.touches[0]?.clientX || 0;
+  //   const deltaX = clientX - bgStartX;
+  //   setBgTranslateX(deltaX);
+  // };
 
-  const handleBgMouseUp = () => {
-    if (!bgIsDragging) return;
-    const threshold = 100;
-    let nextIndex = currentIndex;
-    if (bgTranslateX > threshold && currentIndex > 0) {
-      nextIndex = currentIndex - 1;
-    } else if (bgTranslateX < -threshold && currentIndex < items.length - 1) {
-      nextIndex = currentIndex + 1;
-    }
-    if (nextIndex !== currentIndex) {
-      handleChangeSlide(nextIndex);
-    }
-    setBgIsDragging(false);
-    setBgTranslateX(0);
-    setBgStartX(0);
-  };
+  // const handleBgMouseUp = () => {
+  //   if (!bgIsDragging) return;
+  //   const threshold = 100;
+  //   let nextIndex = currentIndex;
+  //   if (bgTranslateX > threshold && currentIndex > 0) {
+  //     nextIndex = currentIndex - 1;
+  //   } else if (bgTranslateX < -threshold && currentIndex < items.length - 1) {
+  //     nextIndex = currentIndex + 1;
+  //   }
+  //   if (nextIndex !== currentIndex) {
+  //     handleChangeSlide(nextIndex);
+  //   }
+  //   setBgIsDragging(false);
+  //   setBgTranslateX(0);
+  //   setBgStartX(0);
+  // };
 
   const handleChangeSlide = (newIndex: number) => {
     setPrevIndex(currentIndex);
@@ -276,7 +273,6 @@ function MobileCarouselInner() {
       }
     };
 
-    // Add all event listeners
     document.addEventListener("mousemove", handleGlobalMouseMove);
     document.addEventListener("mouseup", handleGlobalMouseUp);
     document.addEventListener("touchmove", handleGlobalMouseMove, { passive: false });
@@ -286,7 +282,6 @@ function MobileCarouselInner() {
     document.addEventListener("touchmove", handleGlobalBgMouseMove, { passive: false });
     document.addEventListener("touchend", handleGlobalBgMouseUp);
 
-    // CRITICAL: Cleanup event listeners to prevent memory leaks
     return () => {
       document.removeEventListener("mousemove", handleGlobalMouseMove);
       document.removeEventListener("mouseup", handleGlobalMouseUp);
@@ -297,7 +292,7 @@ function MobileCarouselInner() {
       document.removeEventListener("touchmove", handleGlobalBgMouseMove);
       document.removeEventListener("touchend", handleGlobalBgMouseUp);
     };
-  }, []); // Empty dependency array - handlers use stateRef instead
+  }, []); 
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
