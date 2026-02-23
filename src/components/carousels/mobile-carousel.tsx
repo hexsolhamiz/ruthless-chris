@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { items } from "@/data/slides";
+import Link from "next/link";
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -44,7 +45,7 @@ class ErrorBoundary extends React.Component<
 }
 
 function MobileCarouselInner() {
-  const [currentIndex, setCurrentIndex] = useState(8);
+  const [currentIndex, setCurrentIndex] = useState(9);
   const [prevIndex, setPrevIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -325,11 +326,34 @@ function MobileCarouselInner() {
 
        <div className="fixed z-50 h-34 inset-4 bg-none flex items-start justify-center overflow-x-hidden">
             {items.map((item, index) => (
-              <div
-                key={index}
+             item.link ? (
+                        
+             <div
+                          key={index}
                 className="absolute transition-all duration-300 ease-out"
                 style={getSlideStyle(index)}
                 onClick={() => handleChangeSlide(index)}
+              >
+                <Link 
+             href={item.link}
+             >  
+                <div
+                  className={`w-16 h-16 flex  overflow-hidden items-center justify-center rounded-full border-white border-1 bg-black text-white shadow-md cursor-pointer ${getSlideClass(
+                    index
+                  )}`}
+                >
+                  <h1 className="text-white  overflow-hidden font-semibold text-xs">
+                    {item.icon}
+                  </h1>
+                </div>
+                              </Link>
+
+              </div>
+             ) : (
+             <div
+             key={index}
+                className="absolute transition-all duration-300 ease-out"
+                style={getSlideStyle(index)}
               >
                 <div
                   className={`w-16 h-16 flex  overflow-hidden items-center justify-center rounded-full border-white border-1 bg-black text-white shadow-md cursor-pointer ${getSlideClass(
@@ -341,6 +365,7 @@ function MobileCarouselInner() {
                   </h1>
                 </div>
               </div>
+             )
             ))}
           </div>
     </div>
